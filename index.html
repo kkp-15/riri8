@@ -3,15 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>りりはちタイム 🍃</title>
+  <title>りりはちタイム 🌴</title>
   <style>
     body {
       font-family: "Hiragino Kaku Gothic ProN", sans-serif;
       margin: 0;
       padding: 2rem;
-      background-color: #e9f7f6;
       text-align: center;
+      transition: background-color 0.8s ease;
+    }
+
+    body.work {
+      background: linear-gradient(to bottom, #e0f7f6, #c8f4e0);
       color: #333;
+    }
+
+    body.break {
+      background: linear-gradient(to bottom, #d0eaff, #a0d2f6);
+      color: #003366;
     }
 
     h1 {
@@ -23,7 +32,7 @@
       margin-top: 0;
       margin-bottom: 1rem;
       font-size: 1rem;
-      color: #555;
+      color: inherit;
     }
 
     .description {
@@ -31,15 +40,21 @@
       margin: 0 auto 2rem auto;
       text-align: left;
       font-size: 0.95rem;
-      background-color: #ffffff;
+      background-color: #ffffffcc;
       padding: 1rem;
       border-radius: 1rem;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }
 
     #timer {
       font-size: 4rem;
       margin: 1rem 0;
+    }
+
+    #message {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      min-height: 1.5em;
     }
 
     button, select {
@@ -67,43 +82,50 @@
       border: none;
     }
 
-    @media (max-width: 600px) {
-      #timer {
-        font-size: 3rem;
-      }
-      .description {
-        font-size: 0.9rem;
-      }
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+    }
+
+    .footer a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
-<body>
-  <h1>りりはちタイム 🍃</h1>
-  <p class="subtitle">癒しの音楽と、もくもく集中時間</p>
+<body class="work">
+  <h1>りりはちタイム 🌴</h1>
+  <p class="subtitle">癒しの音楽で、もくもく集中🏝️</p>
 
   <div class="description">
     <strong>ポモドーロ・テクニックとは？</strong><br>
     25分集中＋5分休憩を1セットとして繰り返す、シンプルで効果的な時間管理法です。<br>
-    このサイトでは、25分間の集中タイマーと癒しのBGMで「もくもく作業」をサポートします🍅
+    このサイトでは、集中タイマーと癒しのBGMで「もくもく作業」をサポートします🌺
   </div>
 
   <div>
-    <label for="musicSelect">🎵 曲を選ぶ：</label>
+    <label for="musicSelect">🎶 曲を選ぶ：</label>
     <select id="musicSelect" onchange="changeVideo(this.value)">
-      <option value="xvcXZbvYf0s">🎧 作業用BGM1</option>
-      <option value="W0lUBVcvJiw">🎧 作業用BGM2</option>
-      <option value="nlzxWWjB-ik">🎧 作業用BGM3</option>
-      <option value="Fdp4u_SUjKE">🎧 作業用BGM4</option>
-      <option value="o-wCYm_Pm6A">🎧 作業用BGM5</option>
-      <option value="EuEzwLm1rVg">🎧 作業用BGM6</option>
-      <option value="rWyX16RTMgk">🎧 作業用BGM7</option>
+      <option value="xvcXZbvYf0s">🐚 作業用BGM1</option>
+      <option value="W0lUBVcvJiw">🐚 作業用BGM2</option>
+      <option value="nlzxWWjB-ik">🐚 作業用BGM3</option>
+      <option value="Fdp4u_SUjKE">🐚 作業用BGM4</option>
+      <option value="o-wCYm_Pm6A">🐚 作業用BGM5</option>
+      <option value="EuEzwLm1rVg">🐚 作業用BGM6</option>
+      <option value="rWyX16RTMgk">🐚 作業用BGM7</option>
     </select>
   </div>
 
   <div id="timer">25:00</div>
+  <div id="message"></div>
+
   <div>
-    <button onclick="startTimer()">スタート</button>
-    <button onclick="resetTimer()">リセット</button>
+    <button onclick="startLoop()">スタート</button>
+    <button onclick="resetLoop()">リセット</button>
   </div>
 
   <iframe
@@ -112,10 +134,15 @@
     allow="autoplay"
   ></iframe>
 
+  <div class="footer">
+    🌈 BGM提供：<a href="https://youtube.com/@riri8bgm?si=FUPbTFrBd1rW2a1d" target="_blank">りりはちBGMチャンネル</a>
+  </div>
+
   <script>
     let timer;
-    let time = 1500;
+    let time = 1500; // 初期は作業時間25分
     let running = false;
+    let isWork = true;
     let player;
     let currentVideoId = "xvcXZbvYf0s";
 
@@ -126,29 +153,49 @@
         `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     }
 
-    function startTimer() {
+    function startLoop() {
       if (running) return;
       running = true;
-      player.playVideo();
+      isWork = true;
+      startPhase();
+    }
+
+    function startPhase() {
+      clearInterval(timer);
+      document.body.className = isWork ? "work" : "break";
+      time = isWork ? 1500 : 300; // 作業25分、休憩5分
+      updateDisplay();
+
+      document.getElementById("message").textContent = isWork
+        ? "🌺 集中タイム開始！次は5分間の休憩です 🏝️"
+        : "🏖️ 休憩スタート！次は25分の作業タイムです 🌊";
+
+      if (isWork) {
+        player.playVideo();
+      } else {
+        player.pauseVideo();
+      }
+
       timer = setInterval(() => {
         if (time > 0) {
           time--;
           updateDisplay();
         } else {
-          clearInterval(timer);
-          alert("🍵 おつかれさまです！休憩しましょう");
-          running = false;
-          player.pauseVideo();
+          isWork = !isWork;
+          startPhase(); // 自動で切り替え
         }
       }, 1000);
     }
 
-    function resetTimer() {
+    function resetLoop() {
       clearInterval(timer);
       time = 1500;
       running = false;
+      isWork = true;
       updateDisplay();
       player.pauseVideo();
+      document.body.className = "work";
+      document.getElementById("message").textContent = "";
     }
 
     function changeVideo(videoId) {
