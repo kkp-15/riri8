@@ -41,22 +41,13 @@
       transition: background-color 0.3s;
     }
 
-    button:hover {
+    button:hover, select:hover {
       background-color: #80cbc4;
     }
 
     select {
       background-color: #f0f8f7;
       color: #00695c;
-    }
-
-    iframe {
-      margin-top: 2rem;
-      width: 100%;
-      max-width: 600px;
-      height: 180px;
-      border-radius: 1rem;
-      border: none;
     }
 
     @media (max-width: 600px) {
@@ -78,16 +69,15 @@
 
   <div style="margin-top: 2rem;">
     <label for="musicSelect">🎵 曲を選ぶ：</label>
-    <select id="musicSelect" onchange="changeVideo(this.value)">
-      <option value="1I8wKrYQzPY">🌸 春のやさしい風</option>
-      <option value="9xYlYtiPdpE">🌙 夜の静かな街</option>
-      <option value="fYmf9GeYc1o">🍃 カフェでの午後</option>
-      <option value="kA4G1JkWfbk">🌊 海辺の癒しBGM</option>
-      <option value="YtAnW6AvvRc">☕ 雨音とピアノ</option>
+    <select id="musicSelect" onchange="openYouTube(this.value)">
+      <option value="">-- 曲を選んでください --</option>
+      <option value="https://www.youtube.com/watch?v=1I8wKrYQzPY">🌸 春のやさしい風</option>
+      <option value="https://www.youtube.com/watch?v=9xYlYtiPdpE">🌙 夜の静かな街</option>
+      <option value="https://www.youtube.com/watch?v=fYmf9GeYc1o">🍃 カフェでの午後</option>
+      <option value="https://www.youtube.com/watch?v=kA4G1JkWfbk">🌊 海辺の癒しBGM</option>
+      <option value="https://www.youtube.com/watch?v=YtAnW6AvvRc">☕ 雨音とピアノ</option>
     </select>
   </div>
-
-  <iframe id="player" src="https://www.youtube.com/embed/1I8wKrYQzPY" allowfullscreen></iframe>
 
   <script>
     let timer;
@@ -123,9 +113,8 @@
       updateDisplay();
     }
 
-    function changeVideo(videoId) {
-      const player = document.getElementById("player");
-      player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    function openYouTube(url) {
+      if (url) window.open(url, '_blank');
     }
 
     updateDisplay();
