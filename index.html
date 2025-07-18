@@ -6,12 +6,12 @@
   <title>りりはちタイム 🍃</title>
   <style>
     body {
+      font-family: "Hiragino Kaku Gothic ProN", sans-serif;
       margin: 0;
       padding: 2rem;
-      font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
-      background: linear-gradient(to bottom, #fef9f4, #e1f3f2);
-      color: #444;
+      background-color: #e9f7f6;
       text-align: center;
+      color: #333;
     }
 
     h1 {
@@ -20,16 +20,29 @@
     }
 
     p.subtitle {
+      margin-top: 0;
+      margin-bottom: 1rem;
       font-size: 1rem;
-      margin-bottom: 2rem;
+      color: #555;
     }
 
-    .timer {
+    .description {
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+      text-align: left;
+      font-size: 0.95rem;
+      background-color: #ffffff;
+      padding: 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    #timer {
       font-size: 4rem;
       margin: 1rem 0;
     }
 
-    button {
+    button, select {
       font-size: 1.2rem;
       padding: 0.6rem 1.2rem;
       margin: 0.5rem;
@@ -41,46 +54,70 @@
       transition: background-color 0.3s;
     }
 
-    button:hover {
+    button:hover, select:hover {
       background-color: #80cbc4;
     }
 
-    video {
-      margin-top: 2rem;
+    #player {
       width: 100%;
-      max-width: 600px;
-      height: 180px;
+      max-width: 560px;
+      height: 315px;
+      margin-top: 2rem;
       border-radius: 1rem;
+      border: none;
     }
 
     @media (max-width: 600px) {
-      .timer {
+      #timer {
         font-size: 3rem;
+      }
+      .description {
+        font-size: 0.9rem;
       }
     }
   </style>
 </head>
 <body>
   <h1>りりはちタイム 🍃</h1>
-  <p class="subtitle">癒しの音楽と、もくもく集中時間。</p>
+  <p class="subtitle">癒しの音楽と、もくもく集中時間</p>
 
-  <div class="timer" id="timer">25:00</div>
+  <div class="description">
+    <strong>ポモドーロ・テクニックとは？</strong><br>
+    25分集中＋5分休憩を1セットとして繰り返す、シンプルで効果的な時間管理法です。<br>
+    このサイトでは、25分間の集中タイマーと癒しのBGMで「もくもく作業」をサポートします🍅
+  </div>
+
+  <div>
+    <label for="musicSelect">🎵 曲を選ぶ：</label>
+    <select id="musicSelect" onchange="changeVideo(this.value)">
+      <option value="xvcXZbvYf0s">🎧 作業用BGM1</option>
+      <option value="W0lUBVcvJiw">🎧 作業用BGM2</option>
+      <option value="nlzxWWjB-ik">🎧 作業用BGM3</option>
+      <option value="Fdp4u_SUjKE">🎧 作業用BGM4</option>
+      <option value="o-wCYm_Pm6A">🎧 作業用BGM5</option>
+      <option value="EuEzwLm1rVg">🎧 作業用BGM6</option>
+      <option value="rWyX16RTMgk">🎧 作業用BGM7</option>
+    </select>
+  </div>
+
+  <div id="timer">25:00</div>
   <div>
     <button onclick="startTimer()">スタート</button>
     <button onclick="resetTimer()">リセット</button>
   </div>
 
-  <!-- 🎵 音楽をvideoタグで再生 -->
-  <video id="bgm" controls preload="auto">
-    <source src="https://rr2---sn-3u-bh2k.googlevideo.com/videoplayback?expire=1700000000&ei=abc123&ip=0.0.0.0&id=o-xxx&itag=140&source=youtube&...（本物のmp4音声URLに置き換え）" type="audio/mp4">
-    お使いのブラウザは音声再生に対応していません。
-  </video>
+  <iframe
+    id="player"
+    src="https://www.youtube.com/embed/xvcXZbvYf0s?enablejsapi=1&loop=1&playlist=xvcXZbvYf0s"
+    allow="autoplay"
+  ></iframe>
 
   <script>
     let timer;
-    let time = 1500; // 25分
+    let time = 1500;
     let running = false;
-    const bgm = document.getElementById("bgm");
+    let player;
+    let currentVideoId = "xvcXZbvYf0s";
 
     function updateDisplay() {
       const minutes = Math.floor(time / 60);
@@ -92,16 +129,16 @@
     function startTimer() {
       if (running) return;
       running = true;
-      bgm.play(); // 🎵 再生
+      player.playVideo();
       timer = setInterval(() => {
         if (time > 0) {
           time--;
           updateDisplay();
         } else {
           clearInterval(timer);
-          alert("おつかれさまです🍵 ちょっと休憩しましょう");
-          bgm.pause(); // 🎵 停止
+          alert("🍵 おつかれさまです！休憩しましょう");
           running = false;
+          player.pauseVideo();
         }
       }, 1000);
     }
@@ -111,8 +148,23 @@
       time = 1500;
       running = false;
       updateDisplay();
-      bgm.pause(); // 🎵 停止
+      player.pauseVideo();
     }
+
+    function changeVideo(videoId) {
+      currentVideoId = videoId;
+      const iframe = document.getElementById("player");
+      iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&loop=1&playlist=${videoId}`;
+    }
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player');
+    }
+
+    let tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    let firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
     updateDisplay();
   </script>
