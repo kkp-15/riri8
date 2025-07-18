@@ -1,219 +1,125 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>りりはちタイム 🌴</title>
-  <style>
-    body {
-      font-family: "Hiragino Kaku Gothic ProN", sans-serif;
-      margin: 0;
-      padding: 2rem;
-      text-align: center;
-      transition: background-color 0.8s ease;
-    }
-
-    body.work {
-      background: linear-gradient(to bottom, #e0f7f6, #c8f4e0);
-      color: #333;
-    }
-
-    body.break {
-      background: linear-gradient(to bottom, #d0eaff, #a0d2f6);
-      color: #003366;
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    p.subtitle {
-      margin-top: 0;
-      margin-bottom: 1rem;
-      font-size: 1rem;
-      color: inherit;
-    }
-
-    .description {
-      max-width: 600px;
-      margin: 0 auto 2rem auto;
-      text-align: left;
-      font-size: 0.95rem;
-      background-color: #ffffffcc;
-      padding: 1rem;
-      border-radius: 1rem;
-    }
-
-    #timer {
-      font-size: 4rem;
-      margin: 1rem 0;
-    }
-
-    #message {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
-      min-height: 1.5em;
-    }
-
-    button, select {
-      font-size: 1.2rem;
-      padding: 0.6rem 1.2rem;
-      margin: 0.5rem;
-      border: none;
-      background-color: #b2dfdb;
-      color: #004d40;
-      border-radius: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    button:hover, select:hover {
-      background-color: #80cbc4;
-    }
-
-    #player {
-      width: 100%;
-      max-width: 560px;
-      height: 315px;
-      margin-top: 2rem;
-      border-radius: 1rem;
-      border: none;
-    }
-
-    .footer {
-      margin-top: 2rem;
-      font-size: 0.9rem;
-    }
-
-    .footer a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>りりはちタイム 🌴</title>
+<style>
+ body{font-family:"Hiragino Kaku Gothic ProN",sans-serif;margin:0;padding:2rem;text-align:center;transition:background-color .8s}
+ body.work{background:linear-gradient(#e0f7f6,#c8f4e0);color:#333}
+ body.break{background:linear-gradient(#d0eaff,#a0d2f6);color:#003366}
+ h1{font-size:2rem;margin:.5rem 0}
+ p.subtitle{margin:0 0 1rem;font-size:1rem}
+ .description{max-width:600px;margin:0 auto 2rem;text-align:left;font-size:.95rem;background:#ffffffcc;padding:1rem;border-radius:1rem}
+ #timer{font-size:4rem;margin:1rem 0}
+ #message{font-size:1.2rem;font-weight:bold;min-height:1.5em;margin-bottom:1rem}
+ button,select{font-size:1.2rem;padding:.6rem 1.2rem;margin:.5rem;border:none;background:#b2dfdb;color:#004d40;border-radius:1rem;cursor:pointer;transition:background-color .3s}
+ button:hover,select:hover{background:#80cbc4}
+ #playerWrap{width:100%;max-width:560px;height:315px;margin-top:2rem;border-radius:1rem;overflow:hidden}
+ .footer{margin-top:2rem;font-size:.9rem}
+ .footer a{color:inherit;text-decoration:none}
+ .footer a:hover{text-decoration:underline}
+</style>
 </head>
 <body class="work">
-  <h1>りりはちタイム 🌴</h1>
-  <p class="subtitle">癒しの音楽で、もくもく集中🏝️</p>
+<h1>りりはちタイム 🌴</h1>
+<p class="subtitle">癒しの音楽で、もくもく集中🏝️</p>
 
-  <div class="description">
-    <strong>ポモドーロ・テクニックとは？</strong><br>
-    25分集中＋5分休憩を1セットとして繰り返す、シンプルで効果的な時間管理法です。<br>
-    このサイトでは、集中タイマーと癒しのBGMで「もくもく作業」をサポートします🌺
-  </div>
+<div class="description">
+<strong>ポモドーロ・テクニックとは？</strong><br>
+25 分集中＋5 分休憩を繰り返す、シンプルな時間管理法です。<br>
+集中タイマーと癒しの BGM で作業をサポートします🌺
+</div>
 
-  <div>
-    <label for="musicSelect">🎶 曲を選ぶ：</label>
-    <select id="musicSelect" onchange="changeVideo(this.value)">
-      <option value="xvcXZbvYf0s">🐚 作業用BGM1</option>
-      <option value="W0lUBVcvJiw">🐚 作業用BGM2</option>
-      <option value="nlzxWWjB-ik">🐚 作業用BGM3</option>
-      <option value="Fdp4u_SUjKE">🐚 作業用BGM4</option>
-      <option value="o-wCYm_Pm6A">🐚 作業用BGM5</option>
-      <option value="EuEzwLm1rVg">🐚 作業用BGM6</option>
-      <option value="rWyX16RTMgk">🐚 作業用BGM7</option>
-    </select>
-  </div>
+<label for="musicSelect">🎶 曲を選ぶ：</label>
+<select id="musicSelect" onchange="changeVideo(this.value)">
+  <option value="xvcXZbvYf0s">🐚 作業用BGM1</option>
+  <option value="W0lUBVcvJiw">🐚 作業用BGM2</option>
+  <option value="nlzxWWjB-ik">🐚 作業用BGM3</option>
+  <option value="Fdp4u_SUjKE">🐚 作業用BGM4</option>
+  <option value="o-wCYm_Pm6A">🐚 作業用BGM5</option>
+  <option value="EuEzwLm1rVg">🐚 作業用BGM6</option>
+  <option value="rWyX16RTMgk">🐚 作業用BGM7</option>
+</select>
 
-  <div id="timer">25:00</div>
-  <div id="message"></div>
+<div id="timer">25:00</div>
+<div id="message"></div>
 
-  <div>
-    <button onclick="startLoop()">スタート</button>
-    <button onclick="resetLoop()">リセット</button>
-  </div>
+<button onclick="startLoop()">スタート</button>
+<button onclick="resetLoop()">リセット</button>
 
-  <iframe
-    id="player"
-    src="https://www.youtube.com/embed/xvcXZbvYf0s?enablejsapi=1&loop=1&playlist=xvcXZbvYf0s"
-    allow="autoplay"
-  ></iframe>
+<div id="playerWrap">
+  <!-- YouTube API が後から iframe を生成して挿入 -->
+  <div id="player"></div>
+</div>
 
-  <div class="footer">
-    🌈 BGM提供：<a href="https://youtube.com/@riri8bgm?si=FUPbTFrBd1rW2a1d" target="_blank">りりはちBGMチャンネル</a>
-  </div>
+<div class="footer">
+ 🌈 BGM 提供：<a href="https://youtube.com/@riri8bgm?si=FUPbTFrBd1rW2a1d" target="_blank">りりはちBGM チャンネル</a>
+</div>
 
-  <script>
-    let timer;
-    let time = 1500; // 初期は作業時間25分
-    let running = false;
-    let isWork = true;
-    let player;
-    let currentVideoId = "xvcXZbvYf0s";
+<script>
+let timer,time=1500,running=false,isWork=true;
+let player,currentVideoId="xvcXZbvYf0s";
 
-    function updateDisplay() {
-      const minutes = Math.floor(time / 60);
-      const seconds = time % 60;
-      document.getElementById("timer").textContent =
-        `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+function updateDisplay(){
+  const m=Math.floor(time/60),s=time%60;
+  document.getElementById("timer").textContent=`${m.toString().padStart(2,"0")}:${s.toString().padStart(2,"0")}`;
+}
+
+function startLoop(){
+  if(running)return;
+  running=true;isWork=true;startPhase();
+}
+
+function startPhase(){
+  clearInterval(timer);
+  document.body.className=isWork?"work":"break";
+  time=isWork?1500:300; // 25min / 5min
+  updateDisplay();
+  document.getElementById("message").textContent=isWork?
+    "🌺 集中タイム開始！次は5分間の休憩です 🏝️":
+    "🏖️ 休憩スタート！次は25分の作業タイムです 🌊";
+
+  if(isWork){player.playVideo();}else{player.pauseVideo();}
+  timer=setInterval(()=>{
+    if(time>0){time--;updateDisplay();}
+    else{isWork=!isWork;startPhase();} // 自動切替
+  },1000);
+}
+
+function resetLoop(){
+  clearInterval(timer);time=1500;running=false;isWork=true;
+  updateDisplay();player.pauseVideo();
+  document.body.className="work";document.getElementById("message").textContent="";
+}
+
+function changeVideo(videoId){
+  currentVideoId=videoId;
+  if(player){
+    player.setLoop(true);
+    if(running&&isWork){
+      // 作業中なら即再生
+      player.loadPlaylist({playlist:[videoId],index:0});
+    }else{
+      // 休憩中 or 停止中はキューのみ
+      player.cuePlaylist({playlist:[videoId],index:0});
     }
+  }
+}
 
-    function startLoop() {
-      if (running) return;
-      running = true;
-      isWork = true;
-      startPhase();
-    }
+function onYouTubeIframeAPIReady(){
+  player=new YT.Player("player",{
+    videoId:currentVideoId,
+    playerVars:{loop:1,playlist:currentVideoId},
+    events:{onReady:(e)=>{e.target.pauseVideo();}}
+  });
+}
 
-    function startPhase() {
-      clearInterval(timer);
-      document.body.className = isWork ? "work" : "break";
-      time = isWork ? 1500 : 300; // 作業25分、休憩5分
-      updateDisplay();
+const tag=document.createElement("script");
+tag.src="https://www.youtube.com/iframe_api";
+document.body.appendChild(tag);
 
-      document.getElementById("message").textContent = isWork
-        ? "🌺 集中タイム開始！次は5分間の休憩です 🏝️"
-        : "🏖️ 休憩スタート！次は25分の作業タイムです 🌊";
-
-      if (isWork) {
-        player.playVideo();
-      } else {
-        player.pauseVideo();
-      }
-
-      timer = setInterval(() => {
-        if (time > 0) {
-          time--;
-          updateDisplay();
-        } else {
-          isWork = !isWork;
-          startPhase(); // 自動で切り替え
-        }
-      }, 1000);
-    }
-
-    function resetLoop() {
-      clearInterval(timer);
-      time = 1500;
-      running = false;
-      isWork = true;
-      updateDisplay();
-      player.pauseVideo();
-      document.body.className = "work";
-      document.getElementById("message").textContent = "";
-    }
-
-    function changeVideo(videoId) {
-      currentVideoId = videoId;
-      const iframe = document.getElementById("player");
-      iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&loop=1&playlist=${videoId}`;
-    }
-
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player');
-    }
-
-    let tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    let firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    updateDisplay();
-  </script>
+updateDisplay();
+</script>
 </body>
 </html>
