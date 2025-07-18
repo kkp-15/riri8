@@ -71,23 +71,32 @@
     }
     .footer {
       margin-top: 2rem;
-      font-size: 0.9rem;
+      font-size: 1rem;
+      font-weight: bold;
     }
     .footer a {
-      color: inherit;
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background-color: #ffe082;
+      color: #000;
+      border-radius: 1rem;
       text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s, transform 0.2s;
     }
     .footer a:hover {
-      text-decoration: underline;
+      background-color: #ffd54f;
+      transform: scale(1.05);
+      text-decoration: none;
     }
   </style>
 </head>
 <body class="work">
   <h1>りりはちタイム 🌴</h1>
-  <p class="subtitle">疯しの音楽で、もくもく集中🏝️</p>  <div class="description">
+  <p class="subtitle">癒しの音楽で、もくもく集中🏝️</p>  <div class="description">
     <strong>ポモドーロ・テクニックとは？</strong><br />
     25分集中＋5分休憩を1セットとして繰り返す、シンプルで効果的な時間管理法です。<br />
-    このサイトでは、集中タイマーと疯しのBGMで「もくもく作業」をサポートします🎺
+    このサイトでは、集中タイマーと癒しのBGMで「もくもく作業」をサポートします🎺
   </div><label for="musicSelect">🎶 曲を選ぶ：</label> <select id="musicSelect" onchange="updateBGM()"> <option value="xvcXZbvYf0s">🐚 作業用BGM1</option> <option value="W0lUBVcvJiw">🐚 作業用BGM2</option> <option value="nlzxWWjB-ik">🐚 作業用BGM3</option> <option value="Fdp4u_SUjKE">🐚 作業用BGM4</option> <option value="o-wCYm_Pm6A">🐚 作業用BGM5</option> <option value="EuEzwLm1rVg">🐚 作業用BGM6</option> <option value="rWyX16RTMgk">🐚 作業用BGM7</option> </select>
 
   <div id="timer">25:00</div>
@@ -95,7 +104,7 @@
     <button onclick="startLoop()">スタート</button>
     <button onclick="resetLoop()">リセット</button>
   </div>  <iframe id="bgmPlayer" allow="autoplay"></iframe>  <div class="footer">
-    🌈 BGM提供：<a href="https://youtube.com/@riri8bgm?si=FUPbTFrBd1rW2a1d" target="_blank">りりはちBGMチャンネル</a>
+    🌈 BGM提供：<a href="https://youtube.com/@riri8bgm?si=FUPbTFrBd1rW2a1d" target="_blank">▶ りりはちBGMチャンネルを見る</a>
   </div>  <script>
     let timer;
     let time = 1500;
