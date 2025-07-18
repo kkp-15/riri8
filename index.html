@@ -1,8 +1,12 @@
 <!DOCTYPE html><html lang="ja"><head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ポモドーロ タイム 🌴</title>
-  <style>
+  <title>ポモドーロ タイム 🌴</title>  <!-- Google Analytics -->  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2LM85GJN0L"></script>  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2LM85GJN0L');
+  </script>  <style>
     body {
       font-family: "Hiragino Kaku Gothic ProN", sans-serif;
       margin: 0;
@@ -88,8 +92,7 @@
       transform: scale(1.05);
       text-decoration: none;
     }
-  </style>
-</head>
+  </style></head>
 <body class="work">
   <h1>ポモドーロ タイム 🌴</h1>
   <p class="subtitle">癒しの音楽で、もくもく集中🏝️</p>
@@ -97,92 +100,76 @@
     <strong>ポモドーロ・テクニックとは？</strong><br />
     25分集中＋5分休憩を1セットとして繰り返す、シンプルで効果的な時間管理法です。<br />
     このサイトでは、集中タイマーと癒しのBGMで「もくもく作業」をサポートします🎺
-  </div>
-  <label for="musicSelect">🎶 曲を選ぶ：</label>
-  <select id="musicSelect" onchange="updateBGM()">
-    <option value="xvcXZbvYf0s">🐚 作業用BGM1</option>
-    <option value="W0lUBVcvJiw">🐚 作業用BGM2</option>
-    <option value="nlzxWWjB-ik">🐚 作業用BGM3</option>
-    <option value="Fdp4u_SUjKE">🐚 作業用BGM4</option>
-    <option value="o-wCYm_Pm6A">🐚 作業用BGM5</option>
-    <option value="EuEzwLm1rVg">🐚 作業用BGM6</option>
-    <option value="rWyX16RTMgk">🐚 作業用BGM7</option>
-    <option value="lY3x33Q9p7Y">🐚 作業用BGM8</option>
-    <option value="zoKoxAws_qg">🐚 作業用BGM9</option>
-    <option value="Y5mkp8pRuug">🐚 作業用BGM10</option>
-  </select>  <div id="timer">25:00</div>
-  <div id="message"></div>
-  <div>
+  </div><label for="musicSelect">🎶 曲を選ぶ：</label> <select id="musicSelect" onchange="updateBGM()"> <option value="xvcXZbvYf0s">🐚 作業用BGM1</option> <option value="W0lUBVcvJiw">🐚 作業用BGM2</option> <option value="nlzxWWjB-ik">🐚 作業用BGM3</option> <option value="Fdp4u_SUjKE">🐚 作業用BGM4</option> <option value="o-wCYm_Pm6A">🐚 作業用BGM5</option> <option value="EuEzwLm1rVg">🐚 作業用BGM6</option> <option value="rWyX16RTMgk">🐚 作業用BGM7</option> <option value="lY3x33Q9p7Y">🐚 作業用BGM8</option> <option value="zoKoxAws_qg">🐚 作業用BGM9</option> <option value="Y5mkp8pRuug">🐚 作業用BGM10</option> </select>
+
+  <div id="timer">25:00</div>
+  <div id="message"></div>  <div>
     <button onclick="startLoop()">スタート</button>
     <button onclick="resetLoop()">リセット</button>
-  </div>
-  <iframe id="bgmPlayer" allow="autoplay"></iframe>
-  <div class="footer">
+  </div>  <iframe id="bgmPlayer" allow="autoplay"></iframe>  <div class="footer">
     <a href="https://youtube.com/@riri8bgm?si=FUPbTFrBd1rW2a1d" target="_blank">🌈RiRi studio チャンネル</a>
-  </div>
-  <script>
+  </div>  <script>
     let timer;
     let time = 1500;
     let running = false;
-    let isWork = true;function updateDisplay() {
-  const minutes = Math.floor(time / 60);
-  const seconds = time % 60;
-  document.getElementById("timer").textContent =
-    `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-}
+    let isWork = true;
 
-function updateBGM() {
-  const videoId = document.getElementById("musicSelect").value;
-  const iframe = document.getElementById("bgmPlayer");
-  if (isWork && running) {
-    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}`;
-  }
-}
+    function updateDisplay() {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      document.getElementById("timer").textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    }
 
-function startLoop() {
-  if (running) return;
-  running = true;
-  isWork = true;
-  startPhase();
-}
+    function updateBGM() {
+      const videoId = document.getElementById("musicSelect").value;
+      const iframe = document.getElementById("bgmPlayer");
+      if (isWork && running) {
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}`;
+      }
+    }
 
-function startPhase() {
-  clearInterval(timer);
-  document.body.className = isWork ? "work" : "break";
-  time = isWork ? 1500 : 300;
-  updateDisplay();
-
-  document.getElementById("message").textContent = isWork
-    ? "🌺 集中タイム開始！次は5分間の休憩です 🏝️"
-    : "🏖️ 休憩スタート！次は25分の作業タイムです 🌊";
-
-  updateBGM();
-
-  timer = setInterval(() => {
-    if (time > 0) {
-      time--;
-      updateDisplay();
-    } else {
-      isWork = !isWork;
-      if (!isWork) document.getElementById("bgmPlayer").src = "";
+    function startLoop() {
+      if (running) return;
+      running = true;
+      isWork = true;
       startPhase();
     }
-  }, 1000);
-}
 
-function resetLoop() {
-  clearInterval(timer);
-  time = 1500;
-  running = false;
-  isWork = true;
-  updateDisplay();
-  document.getElementById("bgmPlayer").src = "";
-  document.body.className = "work";
-  document.getElementById("message").textContent = "";
-}
+    function startPhase() {
+      clearInterval(timer);
+      document.body.className = isWork ? "work" : "break";
+      time = isWork ? 1500 : 300;
+      updateDisplay();
 
-updateDisplay();
+      document.getElementById("message").textContent = isWork
+        ? "🌺 集中タイム開始！次は5分間の休憩です 🏝️"
+        : "🏖️ 休憩スタート！次は25分の作業タイムです 🌊";
 
-  </script>
-</body>
+      updateBGM();
+
+      timer = setInterval(() => {
+        if (time > 0) {
+          time--;
+          updateDisplay();
+        } else {
+          isWork = !isWork;
+          if (!isWork) document.getElementById("bgmPlayer").src = "";
+          startPhase();
+        }
+      }, 1000);
+    }
+
+    function resetLoop() {
+      clearInterval(timer);
+      time = 1500;
+      running = false;
+      isWork = true;
+      updateDisplay();
+      document.getElementById("bgmPlayer").src = "";
+      document.body.className = "work";
+      document.getElementById("message").textContent = "";
+    }
+
+    updateDisplay();
+  </script></body>
 </html>
