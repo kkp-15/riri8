@@ -94,7 +94,7 @@
   </div>
 
   <label for="musicSelect">🎶 曲を選ぶ：</label>
-  <select id="musicSelect" onchange="updateBGM()">
+  <select id="musicSelect">
     <option value="xvcXZbvYf0s">🐚 作業用BGM1</option>
     <option value="W0lUBVcvJiw">🐚 作業用BGM2</option>
     <option value="nlzxWWjB-ik">🐚 作業用BGM3</option>
@@ -131,18 +131,13 @@
         `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     }
 
-    function getSelectedVideoId() {
-      return document.getElementById("musicSelect").value;
-    }
-
     function updateBGM() {
-      const videoId = getSelectedVideoId();
+      const videoId = document.getElementById("musicSelect").value;
       const iframe = document.getElementById("bgmPlayer");
-
-      if (running && isWork) {
-        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
+      if (isWork && running) {
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}`;
       } else {
-        iframe.src = ""; // 停止中 or 休憩中は空にする
+        iframe.src = "";
       }
     }
 
@@ -171,7 +166,7 @@
           updateDisplay();
         } else {
           isWork = !isWork;
-          startPhase(); // 自動で切り替え
+          startPhase();
         }
       }, 1000);
     }
