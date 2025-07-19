@@ -86,15 +86,25 @@
     .footer a {
       display: inline-block;
       padding: 0.5rem 1rem;
-      background-color: #ffe082;
-      color: #000;
+      margin: 0.25rem;
       border-radius: 1rem;
       text-decoration: none;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
       transition: background-color 0.3s, transform 0.2s;
     }
+    .youtube-btn {
+      background-color: #ff4444;
+      color: #fff;
+    }
+    .x-btn {
+      background-color: #000;
+      color: #fff;
+    }
+    .insta-btn {
+      background-color: #e1306c;
+      color: #fff;
+    }
     .footer a:hover {
-      background-color: #ffd54f;
       transform: scale(1.05);
       text-decoration: none;
     }
@@ -112,7 +122,6 @@
 
   <label for="musicSelect">🎶 曲を選ぶ：</label>
   <select id="musicSelect" onchange="updateBGM()">
-    <!-- BGM1〜24 -->
     <option value="xvcXZbvYf0s">🐚 作業用BGM1</option>
     <option value="W0lUBVcvJiw">🐚 作業用BGM2</option>
     <option value="nlzxWWjB-ik">🐚 作業用BGM3</option>
@@ -155,7 +164,9 @@
   <iframe id="bgmPlayer" allow="autoplay"></iframe>
 
   <div class="footer">
-    <a href="https://youtube.com/@riri8bgm?si=FUPbTFrBd1rW2a1d" target="_blank">🌈RiRi studio チャンネル</a>
+    <a class="youtube-btn" href="https://youtube.com/@riri8bgm" target="_blank">YouTube</a>
+    <a class="x-btn" href="https://x.com/riri8bgm" target="_blank">X</a>
+    <a class="insta-btn" href="https://instagram.com/riri8bgm" target="_blank">Instagram</a>
   </div>
 
   <script>
