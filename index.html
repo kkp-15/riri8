@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="ja">
+<!DOCTYPE html>
+<html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -101,32 +102,69 @@
 </head>
 <body class="work">
   <h1>ポモドーロ タイム 🌴</h1>
-  <p class="subtitle">癒しの音楽で、もくもく集中🏕️</p>
+  <p class="subtitle">癒しの音楽で、もくもく集中🏝️</p>
+
   <div class="description">
     <strong>ポモドーロ・テクニックとは？</strong><br />
     25分集中＋5分休憩を1セットとして繰り返す、シンプルで効果的な時間管理法です。<br />
     このサイトでは、集中タイマーと癒しのBGMで「もくもく作業」をサポートします🎺
   </div>
-  <label for="modeSelect">⏱ セッションモード：</label>
-  <select id="modeSelect">
-    <option value="25-5">25分作業 + 5分休憩</option>
-    <option value="50-10">50分作業 + 10分休憩</option>
-  </select>  <br /><label for="musicSelect">🎶 曲を選ぶ：</label> <select id="musicSelect" onchange="updateBGM()"> <option value="xvcXZbvYf0s">🐚 作業用BGM1</option> <option value="W0lUBVcvJiw">🐚 作業用BGM2</option> <option value="nlzxWWjB-ik">🐚 作業用BGM3</option> <option value="Fdp4u_SUjKE">🐚 作業用BGM4</option> <option value="o-wCYm_Pm6A">🐚 作業用BGM5</option> <option value="EuEzwLm1rVg">🐚 作業用BGM6</option> <option value="rWyX16RTMgk">🐚 作業用BGM7</option> <option value="lY3x33Q9p7Y">🐚 作業用BGM8</option> <option value="zoKoxAws_qg">🐚 作業用BGM9</option> <option value="Y5mkp8pRuug">🐚 作業用BGM10</option> </select>
+
+  <label for="musicSelect">🎶 曲を選ぶ：</label>
+  <select id="musicSelect" onchange="updateBGM()">
+    <!-- BGM1〜24 -->
+    <option value="xvcXZbvYf0s">🐚 作業用BGM1</option>
+    <option value="W0lUBVcvJiw">🐚 作業用BGM2</option>
+    <option value="nlzxWWjB-ik">🐚 作業用BGM3</option>
+    <option value="Fdp4u_SUjKE">🐚 作業用BGM4</option>
+    <option value="o-wCYm_Pm6A">🐚 作業用BGM5</option>
+    <option value="HoljfuP1POQ">🐚 作業用BGM6</option>
+    <option value="rWyX16RTMgk">🐚 作業用BGM7</option>
+    <option value="lY3x33Q9p7Y">🐚 作業用BGM8</option>
+    <option value="zoKoxAws_qg">🐚 作業用BGM9</option>
+    <option value="Y5mkp8pRuug">🐚 作業用BGM10</option>
+    <option value="BYra5__dZt8">🐚 作業用BGM11</option>
+    <option value="HmYecNjo-YU">🐚 作業用BGM12</option>
+    <option value="QLDlN5QeFJY">🐚 作業用BGM13</option>
+    <option value="_ES-qbX3PZw">🐚 作業用BGM14</option>
+    <option value="gum_BK-TaNc">🐚 作業用BGM15</option>
+    <option value="aR2wgXX1LKw">🐚 作業用BGM16</option>
+    <option value="8YhHNFx6IG4">🐚 作業用BGM17</option>
+    <option value="fdvMXXki5aI">🐚 作業用BGM18</option>
+    <option value="_daHDiMOhUg">🐚 作業用BGM19</option>
+    <option value="JHgbgOtCh6o">🐚 作業用BGM20</option>
+    <option value="EuEzwLm1rVg">🐚 作業用BGM21</option>
+    <option value="sO3IO8ITQbk">🐚 作業用BGM22</option>
+    <option value="7Col7jbU58I">🐚 作業用BGM23</option>
+    <option value="HoljfuP1POQ">🐚 作業用BGM24</option>
+  </select>
+
+  <div>
+    <button onclick="setMode(25, 5)">⏱️ 25分/5分</button>
+    <button onclick="setMode(50, 10)">⏱️ 50分/10分</button>
+  </div>
 
   <div id="timer">25:00</div>
   <div id="message"></div>
+
   <div>
     <button onclick="startLoop()">スタート</button>
     <button onclick="resetLoop()">リセット</button>
-  </div>  <iframe id="bgmPlayer" allow="autoplay"></iframe>  <div class="footer">
+  </div>
+
+  <iframe id="bgmPlayer" allow="autoplay"></iframe>
+
+  <div class="footer">
     <a href="https://youtube.com/@riri8bgm?si=FUPbTFrBd1rW2a1d" target="_blank">🌈RiRi studio チャンネル</a>
-  </div>  <script>
+  </div>
+
+  <script>
     let timer;
     let time = 1500;
     let running = false;
     let isWork = true;
-    let workMinutes = 25;
-    let breakMinutes = 5;
+    let workDuration = 1500;
+    let breakDuration = 300;
 
     function updateDisplay() {
       const minutes = Math.floor(time / 60);
@@ -143,37 +181,30 @@
       }
     }
 
-    function updateMode() {
-      const mode = document.getElementById("modeSelect").value;
-      const [w, b] = mode.split("-").map(Number);
-      workMinutes = w;
-      breakMinutes = b;
-    }
-
-    document.getElementById("modeSelect").addEventListener("change", () => {
-      if (!running) {
-        updateMode();
-        updateDisplay();
-      }
-    });
-
     function startLoop() {
       if (running) return;
-      updateMode();
       running = true;
       isWork = true;
       startPhase();
     }
 
+    function setMode(workMin, breakMin) {
+      if (running) return;
+      workDuration = workMin * 60;
+      breakDuration = breakMin * 60;
+      time = workDuration;
+      updateDisplay();
+    }
+
     function startPhase() {
       clearInterval(timer);
       document.body.className = isWork ? "work" : "break";
-      time = isWork ? workMinutes * 60 : breakMinutes * 60;
+      time = isWork ? workDuration : breakDuration;
       updateDisplay();
 
       document.getElementById("message").textContent = isWork
-        ? `🌺 集中タイム開始！次は${breakMinutes}分間の休憩です 🏕️`
-        : `🏖️ 休憩スタート！次は${workMinutes}分の作業タイムです 🌊`;
+        ? `🌺 集中タイム開始！次は${breakDuration / 60}分間の休憩です 🏝️`
+        : `🏖️ 休憩スタート！次は${workDuration / 60}分の作業タイムです 🌊`;
 
       updateBGM();
 
@@ -191,8 +222,7 @@
 
     function resetLoop() {
       clearInterval(timer);
-      updateMode();
-      time = workMinutes * 60;
+      time = workDuration;
       running = false;
       isWork = true;
       updateDisplay();
@@ -201,7 +231,7 @@
       document.getElementById("message").textContent = "";
     }
 
-    updateMode();
     updateDisplay();
-  </script></body>
+  </script>
+</body>
 </html>
