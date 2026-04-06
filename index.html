@@ -790,7 +790,7 @@
       const breakMin = breakDuration / 60;
       document.getElementById('phase').textContent   = isWork ? '集中タイム' : '休憩タイム';
       document.getElementById('message').textContent = isWork
-        ? `🌺 集中スタート！${breakMin}分後に休憩`
+        ? `🌺 集中スタート！${workMin}分後に休憩`
         : `🏖️ お疲れさま！${breakMin}分間休憩しよう`;
 
       if (isWork) {
