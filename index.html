@@ -372,12 +372,8 @@
     /* ── Video Card ── */
     .video-card { overflow: hidden; }
 
-    iframe {
-      width: 100%;
-      height: 205px;
-      border: none;
-      display: block;
-    }
+    #bgmPlayer { width: 100%; height: 205px; }
+    #bgmPlayer iframe { width: 100%; height: 100%; border: none; display: block; }
 
     /* ── Responsive ── */
     @media (max-width: 600px) {
@@ -386,14 +382,14 @@
       .timer-svg { width: 165px; height: 165px; }
       .timer-time { font-size: 2.6rem; }
       .timer-card { padding: 1.3rem 1.1rem 1.1rem; }
-      iframe { height: 180px; }
+      #bgmPlayer { height: 180px; }
     }
 
     @media (max-width: 375px) {
       .timer-svg { width: 145px; height: 145px; }
       .timer-time { font-size: 2.3rem; }
       .timer-card { padding: 1.1rem 1rem 1rem; }
-      iframe { height: 160px; }
+      #bgmPlayer { height: 160px; }
     }
   </style>
 </head>
@@ -468,7 +464,7 @@
 
     <!-- Video -->
     <div class="card video-card">
-      <iframe id="bgmPlayer" allow="autoplay"></iframe>
+      <div id="bgmPlayer"></div>
     </div>
 
   </div>
@@ -528,6 +524,22 @@
       { id: 'Iud9PZCxIFg', title: '作業用BGM 40' },
       { id: 'I8iyRjqQRaQ', title: '作業用BGM 41' },
     ];
+
+    // ── YouTube IFrame Player API ──
+    let ytPlayer = null;
+    let ytReady  = false;
+    (function () {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    })();
+    function onYouTubeIframeAPIReady() {
+      ytPlayer = new YT.Player('bgmPlayer', {
+        width: '100%', height: '100%',
+        playerVars: { controls: 1, rel: 0, modestbranding: 1 },
+        events: { onReady: () => { ytReady = true; } },
+      });
+    }
 
     // ── State ──
     let timerInterval;
@@ -702,11 +714,13 @@
     function pauseLoop() {
       paused = true;
       clearInterval(timerInterval);
+      if (ytReady && ytPlayer) ytPlayer.pauseVideo();
       updateMainBtn();
     }
 
     function resumeLoop() {
       paused = false;
+      if (ytReady && ytPlayer && isWork) ytPlayer.playVideo();
       updateMainBtn();
       tick();
     }
@@ -720,7 +734,7 @@
       updateDisplay();
       updateRing();
       document.body.className = '';
-      document.getElementById('bgmPlayer').src        = '';
+      if (ytReady && ytPlayer) ytPlayer.stopVideo();
       document.getElementById('message').textContent  = '';
       document.getElementById('phase').textContent    = '集中タイム';
       document.getElementById('nowPlaying').innerHTML = '🎵 スタートすると再生されます';
@@ -747,7 +761,7 @@
         if (shuffleMode) shuffleSelect();
         updateBGM();
       } else {
-        document.getElementById('bgmPlayer').src        = '';
+        if (ytReady && ytPlayer) ytPlayer.pauseVideo();
         document.getElementById('nowPlaying').innerHTML = '🏖️ 休憩中...';
       }
 
@@ -784,9 +798,13 @@
       const opt     = sel.options[sel.selectedIndex];
       const title   = opt?.dataset.fullTitle || opt?.text || '';
       const clean   = cleanTitle(title);
-      document.getElementById('bgmPlayer').src =
-        `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}`;
       document.getElementById('nowPlaying').innerHTML = `▶ <span>${clean}</span>`;
+      if (!ytReady || !ytPlayer) return;
+      if (running && isWork && !paused) {
+        ytPlayer.loadVideoById(videoId);
+      } else {
+        ytPlayer.cueVideoById(videoId);
+      }
     }
 
     function toggleShuffle() {
