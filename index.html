@@ -24,14 +24,15 @@
 
   <style>
     :root {
-      --accent: #00d4aa;
-      --accent2: #ff6b9d;
-      --ring-work: #00d4aa;
-      --ring-break: #74b9ff;
-      --card-bg: rgba(255, 255, 255, 0.07);
-      --card-border: rgba(255, 255, 255, 0.12);
-      --text: #e8f4f8;
-      --text-muted: rgba(232, 244, 248, 0.5);
+      --coral:       #e17055;
+      --coral-dark:  #c0392b;
+      --gold:        #fdcb6e;
+      --ocean:       #00b4d8;
+      --ocean-light: #90e0ef;
+      --card:        #ffffff;
+      --text:        #2d3436;
+      --muted:       #95a5a6;
+      --border:      #efefef;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,479 +40,435 @@
     body {
       font-family: 'Poppins', 'Hiragino Kaku Gothic ProN', sans-serif;
       min-height: 100vh;
+      background: linear-gradient(150deg, #fff8f2 0%, #fde8d8 45%, #e8f8f4 100%);
+      background-attachment: fixed;
       color: var(--text);
-      background: linear-gradient(-45deg, #080e1a, #0d1e35, #0a1220, #081828);
-      background-size: 400% 400%;
-      animation: gradientShift 20s ease infinite;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem 1rem 3rem;
-    }
-
-    @keyframes gradientShift {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      justify-content: center;
+      padding: 1.2rem 1rem 2rem;
+      transition: background 1s ease;
     }
 
     body.break-mode {
-      background: linear-gradient(-45deg, #0a0818, #12082a, #0a1020, #060d20);
+      background: linear-gradient(150deg, #f0f9ff 0%, #d6f0f8 45%, #e8fff6 100%);
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.35) 0%, transparent 100%),
-        radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.25) 0%, transparent 100%),
-        radial-gradient(1px 1px at 50% 65%, rgba(255,255,255,0.3) 0%, transparent 100%),
-        radial-gradient(1px 1px at 10% 75%, rgba(255,255,255,0.2) 0%, transparent 100%),
-        radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.28) 0%, transparent 100%),
-        radial-gradient(1px 1px at 35% 90%, rgba(255,255,255,0.18) 0%, transparent 100%),
-        radial-gradient(1px 1px at 65% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
-        radial-gradient(1px 1px at 45% 15%, rgba(255,255,255,0.22) 0%, transparent 100%),
-        radial-gradient(1px 1px at 75% 55%, rgba(255,255,255,0.25) 0%, transparent 100%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .container {
+    /* ── App wrapper ── */
+    .app {
       width: 100%;
-      max-width: 520px;
-      position: relative;
-      z-index: 1;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      padding: 1.8rem;
-      margin-bottom: 1.2rem;
+    /* ── Header ── */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.1rem 0.2rem;
     }
 
-    /* === Header === */
-    .header {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .header h1 {
-      font-size: 1.8rem;
+    .app-logo {
+      font-size: 1.15rem;
       font-weight: 700;
-      letter-spacing: 0.04em;
-      background: linear-gradient(135deg, var(--accent), #7dd3fc);
+      background: linear-gradient(120deg, var(--coral), var(--gold));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      letter-spacing: 0.02em;
     }
 
-    .header p {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-top: 0.35rem;
-    }
-
-    /* === Timer Card === */
-    .timer-card {
-      text-align: center;
-    }
-
-    .mode-tabs {
+    /* mode switcher */
+    .mode-switcher {
       display: flex;
-      gap: 0.5rem;
-      justify-content: center;
-      margin-bottom: 1.6rem;
+      background: rgba(0,0,0,0.06);
+      border-radius: 50px;
+      padding: 3px;
+      gap: 2px;
     }
 
     .mode-tab {
-      padding: 0.4rem 1.3rem;
+      padding: 0.28rem 0.85rem;
       border-radius: 50px;
-      border: 1px solid var(--card-border);
+      border: none;
       background: transparent;
-      color: var(--text-muted);
+      color: var(--muted);
       font-family: inherit;
-      font-size: 0.82rem;
+      font-size: 0.72rem;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.2s;
+      white-space: nowrap;
     }
 
     .mode-tab.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #080e1a;
-      font-weight: 600;
+      background: #fff;
+      color: var(--coral);
+      font-weight: 700;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
     }
 
-    .timer-wrapper {
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border-radius: 22px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    /* ── Timer Card ── */
+    .timer-card {
+      padding: 1.6rem 1.4rem 1.3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Ring */
+    .ring-wrapper {
       position: relative;
-      display: inline-block;
-      margin-bottom: 1.4rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.9rem;
     }
 
     .timer-svg {
-      width: 210px;
-      height: 210px;
+      width: 190px;
+      height: 190px;
       transform: rotate(-90deg);
     }
 
     .ring-bg {
       fill: none;
-      stroke: rgba(255, 255, 255, 0.07);
-      stroke-width: 9;
+      stroke: #f2f2f2;
+      stroke-width: 11;
     }
+
+    /* light ghost ring showing full circle */
+    .ring-ghost {
+      fill: none;
+      stroke: #fce8e2;
+      stroke-width: 11;
+      stroke-dasharray: 565.48;
+      stroke-dashoffset: 0;
+    }
+
+    body.break-mode .ring-ghost { stroke: #d6eff8; }
 
     .ring-progress {
       fill: none;
-      stroke: var(--ring-work);
-      stroke-width: 9;
+      stroke: url(#workGrad);
+      stroke-width: 11;
       stroke-linecap: round;
       stroke-dasharray: 565.48;
       stroke-dashoffset: 0;
-      transition: stroke-dashoffset 0.9s linear, stroke 0.8s ease;
+      transition: stroke-dashoffset 0.9s linear;
+    }
+
+    body.break-mode .ring-progress { stroke: url(#breakGrad); }
+
+    /* glow when running */
+    .ring-wrapper.active .ring-progress {
+      filter: drop-shadow(0 0 7px rgba(225,112,85,0.55));
+    }
+
+    body.break-mode .ring-wrapper.active .ring-progress {
+      filter: drop-shadow(0 0 7px rgba(0,180,216,0.55));
     }
 
     .timer-display {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
       text-align: center;
     }
 
     .timer-time {
-      font-size: 2.8rem;
+      font-size: 3rem;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: -0.03em;
       line-height: 1;
+      color: var(--text);
     }
 
     .timer-phase {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 0.4rem;
-      letter-spacing: 0.12em;
+      font-size: 0.67rem;
+      color: var(--muted);
+      letter-spacing: 0.14em;
       text-transform: uppercase;
+      margin-top: 0.35rem;
     }
 
+    /* Message */
     #message {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      min-height: 1.4em;
-      margin-bottom: 1.3rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+      min-height: 1.2em;
+      margin-bottom: 0.9rem;
     }
 
-    .btn-group {
+    /* Controls */
+    .controls {
       display: flex;
-      gap: 0.7rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      font-family: inherit;
-      font-size: 0.92rem;
-      font-weight: 600;
-      padding: 0.65rem 1.5rem;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.25s;
-      letter-spacing: 0.02em;
+      align-items: center;
+      gap: 0.6rem;
+      width: 100%;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #00b894);
-      color: #080e1a;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 212, 170, 0.4);
-    }
-
-    .btn-pause {
-      background: linear-gradient(135deg, #fdcb6e, #e17055);
-      color: #080e1a;
-    }
-
-    .btn-pause:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(253, 203, 110, 0.4);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.09);
-      color: var(--text);
-      border: 1px solid var(--card-border);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.17);
-      transform: translateY(-2px);
-    }
-
-    .session-info {
-      display: flex;
-      justify-content: center;
-      gap: 2.5rem;
-      margin-top: 1.3rem;
-      padding-top: 1.2rem;
-      border-top: 1px solid var(--card-border);
-    }
-
-    .session-stat {
-      text-align: center;
-    }
-
-    .session-stat .value {
-      font-size: 1.6rem;
+      flex: 1;
+      font-family: inherit;
+      font-size: 1rem;
       font-weight: 700;
-      color: var(--accent);
+      padding: 0.78rem 1rem;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
     }
 
-    .session-stat .label {
-      font-size: 0.68rem;
-      color: var(--text-muted);
+    .btn-primary.start {
+      background: linear-gradient(135deg, var(--coral), var(--coral-dark));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(225,112,85,0.35);
+    }
+
+    .btn-primary.start:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(225,112,85,0.45); }
+
+    .btn-primary.pause {
+      background: linear-gradient(135deg, var(--gold), #e67e22);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(253,203,110,0.35);
+    }
+
+    .btn-primary.pause:hover { transform: translateY(-1px); }
+
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-reset {
+      width: 50px;
+      height: 50px;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 14px;
+      background: #f4f4f4;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-reset:hover { background: #ebebeb; color: var(--text); transform: rotate(-30deg); }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      width: 100%;
+      justify-content: center;
+    }
+
+    .stat { text-align: center; }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--coral);
+      line-height: 1;
+    }
+
+    body.break-mode .stat-value { color: var(--ocean); }
+
+    .stat-label {
+      font-size: 0.6rem;
+      color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.1em;
+      margin-top: 0.2rem;
     }
 
-    /* === BGM Card === */
-    .bgm-card .card-label {
-      display: block;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 0.8rem;
+    /* ── BGM Card ── */
+    .bgm-card {
+      padding: 0.95rem 1.1rem 0.8rem;
     }
 
-    .bgm-controls {
+    .bgm-row {
       display: flex;
-      gap: 0.6rem;
       align-items: center;
+      gap: 0.45rem;
     }
 
     select {
       flex: 1;
+      min-width: 0;
       font-family: inherit;
-      font-size: 0.88rem;
-      padding: 0.65rem 2rem 0.65rem 1rem;
-      border: 1px solid var(--card-border);
-      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.82rem;
+      padding: 0.5rem 1.8rem 0.5rem 0.85rem;
+      border: 1.5px solid var(--border);
+      background: #fafafa;
       color: var(--text);
-      border-radius: 12px;
+      border-radius: 10px;
       cursor: pointer;
       appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='rgba(232,244,248,0.45)' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath fill='%2395a5a6' d='M5 7L0 0h10z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 12px center;
+      background-position: right 9px center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: border-color 0.2s;
     }
 
-    select option {
-      background: #0d1e35;
-      color: var(--text);
-    }
+    select:focus { outline: none; border-color: var(--coral); }
+    select option { background: #fff; color: var(--text); }
 
     .btn-icon {
-      font-size: 1.1rem;
-      padding: 0.65rem 0.85rem;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--border);
+      background: #fafafa;
+      border-radius: 10px;
       cursor: pointer;
-      transition: all 0.25s;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
       font-family: inherit;
-      line-height: 1;
     }
 
     .btn-icon:hover, .btn-icon.active {
-      background: var(--accent);
-      color: #080e1a;
-      border-color: var(--accent);
+      background: var(--coral);
+      border-color: var(--coral);
+      color: #fff;
       transform: scale(1.05);
     }
 
     .now-playing {
-      margin-top: 0.75rem;
-      font-size: 0.8rem;
-      color: var(--text-muted);
+      margin-top: 0.5rem;
+      font-size: 0.73rem;
+      color: var(--muted);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .now-playing span { color: var(--accent); }
+    .now-playing span { color: var(--coral); font-weight: 500; }
 
-    .api-status {
-      margin-top: 0.4rem;
-      font-size: 0.72rem;
-      min-height: 1em;
-    }
+    .api-status { font-size: 0.65rem; margin-top: 0.25rem; min-height: 0.9em; }
+    .api-status.loading { color: #f39c12; }
+    .api-status.success { color: #27ae60; }
+    .api-status.error   { color: #e74c3c; }
 
-    .api-status.loading { color: #fdcb6e; }
-    .api-status.success { color: var(--accent); }
-    .api-status.error   { color: var(--accent2); }
-
-    /* === YouTube Embed === */
-    .embed-wrapper {
-      overflow: hidden;
-      border-radius: 16px;
-    }
+    /* ── Video Card ── */
+    .video-card { overflow: hidden; }
 
     iframe {
       width: 100%;
-      height: 275px;
+      height: 205px;
       border: none;
       display: block;
     }
 
-    /* === About === */
-    .about-card {
-      font-size: 0.83rem;
-      color: var(--text-muted);
-      line-height: 1.75;
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      body { padding: 0.9rem 0.8rem 1.5rem; }
+      .app { gap: 0.6rem; }
+      .timer-svg { width: 165px; height: 165px; }
+      .timer-time { font-size: 2.6rem; }
+      .timer-card { padding: 1.3rem 1.1rem 1.1rem; }
+      iframe { height: 180px; }
     }
 
-    .about-card strong { color: var(--text); }
-
-    /* === Footer === */
-    .footer { text-align: center; }
-
-    .footer p {
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      margin-bottom: 0.9rem;
-    }
-
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 0.55rem;
-      flex-wrap: wrap;
-    }
-
-    .social-links a {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.5rem 1.1rem;
-      border-radius: 50px;
-      text-decoration: none;
-      font-size: 0.82rem;
-      font-weight: 600;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .social-links a:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
-    }
-
-    .youtube-btn { background: #ff4444; color: #fff; }
-    .x-btn { background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.15); }
-    .insta-btn { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
-    .tiktok-btn { background: #010101; color: #fff; border: 1px solid rgba(255,255,255,0.1); }
-
-    /* === Responsive === */
-    @media (max-width: 380px) {
+    @media (max-width: 375px) {
+      .timer-svg { width: 145px; height: 145px; }
       .timer-time { font-size: 2.3rem; }
-      .timer-svg { width: 180px; height: 180px; }
+      .timer-card { padding: 1.1rem 1rem 1rem; }
+      iframe { height: 160px; }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
+  <div class="app">
 
     <!-- Header -->
-    <div class="header">
-      <h1>RIRI 🌺 ポモドーロ タイム</h1>
-      <p>癒しの音楽で、もくもく集中 🏝️</p>
-    </div>
-
-    <!-- Timer Card -->
-    <div class="card timer-card">
-      <div class="mode-tabs">
-        <button class="mode-tab active" onclick="setMode(25, 5, this)">25 / 5 分</button>
-        <button class="mode-tab" onclick="setMode(50, 10, this)">50 / 10 分</button>
+    <header class="app-header">
+      <span class="app-logo">RIRI 🌺 ポモドーロ</span>
+      <div class="mode-switcher">
+        <button class="mode-tab tab-25 active" onclick="setMode(25, 5, this)">25 / 5</button>
+        <button class="mode-tab tab-50"        onclick="setMode(50, 10, this)">50 / 10</button>
       </div>
+    </header>
 
-      <div class="timer-wrapper">
+    <!-- Timer -->
+    <div class="card timer-card">
+      <div class="ring-wrapper" id="ringWrapper">
         <svg class="timer-svg" viewBox="0 0 200 200">
+          <defs>
+            <linearGradient id="workGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stop-color="#e17055"/>
+              <stop offset="100%" stop-color="#fdcb6e"/>
+            </linearGradient>
+            <linearGradient id="breakGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stop-color="#00b4d8"/>
+              <stop offset="100%" stop-color="#90e0ef"/>
+            </linearGradient>
+          </defs>
           <circle class="ring-bg"       cx="100" cy="100" r="90"/>
+          <circle class="ring-ghost"    cx="100" cy="100" r="90"/>
           <circle class="ring-progress" cx="100" cy="100" r="90" id="timerRing"/>
         </svg>
         <div class="timer-display">
-          <div class="timer-time" id="timer">25:00</div>
+          <div class="timer-time"  id="timer">25:00</div>
           <div class="timer-phase" id="phase">集中タイム</div>
         </div>
       </div>
 
       <div id="message"></div>
 
-      <div class="btn-group">
-        <button class="btn btn-primary" id="startBtn"  onclick="startLoop()">▶ スタート</button>
-        <button class="btn btn-pause"   id="pauseBtn"  onclick="pauseLoop()" style="display:none">⏸ 一時停止</button>
-        <button class="btn btn-secondary"              onclick="resetLoop()">↺ リセット</button>
+      <div class="controls">
+        <button class="btn-primary start" id="mainBtn" onclick="mainBtnClick()">▶ スタート</button>
+        <button class="btn-reset" onclick="resetLoop()" title="リセット">↺</button>
       </div>
 
-      <div class="session-info">
-        <div class="session-stat">
-          <div class="value" id="sessionCount">0</div>
-          <div class="label">セッション</div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" id="sessionCount">0</div>
+          <div class="stat-label">セッション</div>
         </div>
-        <div class="session-stat">
-          <div class="value" id="focusTime">0</div>
-          <div class="label">集中 (分)</div>
+        <div class="stat">
+          <div class="stat-value" id="focusTime">0</div>
+          <div class="stat-label">集中 (分)</div>
         </div>
       </div>
     </div>
 
-    <!-- BGM Card -->
+    <!-- BGM -->
     <div class="card bgm-card">
-      <span class="card-label">🎵 BGM を選ぶ</span>
-      <div class="bgm-controls">
+      <div class="bgm-row">
         <select id="musicSelect" onchange="updateBGM()">
           <option value="">読み込み中...</option>
         </select>
         <button class="btn-icon" id="shuffleBtn" onclick="toggleShuffle()" title="シャッフル">🔀</button>
         <button class="btn-icon" onclick="playNext()" title="次の曲">⏭</button>
       </div>
-      <div class="now-playing" id="nowPlaying">🎶 スタートすると再生されます</div>
-      <div class="api-status" id="apiStatus"></div>
+      <div class="now-playing" id="nowPlaying">🎵 スタートすると再生されます</div>
+      <div class="api-status"  id="apiStatus"></div>
     </div>
 
-    <!-- YouTube Embed -->
-    <div class="card">
-      <div class="embed-wrapper">
-        <iframe id="bgmPlayer" allow="autoplay"></iframe>
-      </div>
-    </div>
-
-    <!-- About -->
-    <div class="card about-card">
-      <strong>ポモドーロ・テクニックとは？</strong><br />
-      25分集中＋5分休憩を1セットとして繰り返す、シンプルで効果的な時間管理法です。
-      集中タイマーと癒しのBGMで「もくもく作業」をサポートします 🎺<br /><br />
-      <span style="font-size:0.78rem">💡 Space キーでスタート / 一時停止できます</span>
-    </div>
-
-    <!-- Footer -->
-    <div class="card footer">
-      <p>RIRIのSNSをフォローしてね ✨</p>
-      <div class="social-links">
-        <a class="youtube-btn" href="https://youtube.com/@riri8bgm"    target="_blank">▶ YouTube</a>
-        <a class="x-btn"       href="https://x.com/riri8bgm"           target="_blank">𝕏 X</a>
-        <a class="insta-btn"   href="https://instagram.com/riri8bgm"   target="_blank">📷 Instagram</a>
-        <a class="tiktok-btn"  href="https://www.tiktok.com/@riri8bgm?lang=ja-JP" target="_blank">♪ TikTok</a>
-      </div>
+    <!-- Video -->
+    <div class="card video-card">
+      <iframe id="bgmPlayer" allow="autoplay"></iframe>
     </div>
 
   </div>
@@ -521,77 +478,70 @@
     // YouTube API 設定（BGM自動取得）
     //
     // BGMをチャンネルから自動取得するには：
-    //   1. Google Cloud Console で「YouTube Data API v3」を有効化
-    //   2. APIキーを作成し YT_API_KEY に貼り付ける
-    //      ※ ドメイン riri8.kkpwebninja.com に制限することを推奨
-    //   3. YT_CHANNEL_ID に @riri8bgm のチャンネルID（UCで始まる）を設定
-    //      ※ youtube.com/@riri8bgm を開き、ページソースで "channelId" を検索
-    //
-    // 未設定の場合はフォールバックリストを使用します
+    //   1. Google Cloud Console で YouTube Data API v3 を有効化
+    //   2. APIキーを YT_API_KEY に設定
+    //   3. チャンネルID（UCで始まる）を YT_CHANNEL_ID に設定
+    //      ※ youtube.com/@riri8bgm のページソースで "channelId" を検索
     // ============================================================
-    const YT_API_KEY    = '';  // 例: 'AIzaSyABC123...'
-    const YT_CHANNEL_ID = '';  // 例: 'UCxxxxxxxxxxxxxxxxxxxxxxxx'
+    const YT_API_KEY    = '';
+    const YT_CHANNEL_ID = '';
 
     const FALLBACK_VIDEOS = [
-      { id: 'xvcXZbvYf0s', title: '🐚 作業用BGM 1'  },
-      { id: 'W0lUBVcvJiw', title: '🐚 作業用BGM 2'  },
-      { id: 'nlzxWWjB-ik', title: '🐚 作業用BGM 3'  },
-      { id: 'Fdp4u_SUjKE', title: '🐚 作業用BGM 4'  },
-      { id: 'o-wCYm_Pm6A', title: '🐚 作業用BGM 5'  },
-      { id: 'HoljfuP1POQ', title: '🐚 作業用BGM 6'  },
-      { id: 'rWyX16RTMgk', title: '🐚 作業用BGM 7'  },
-      { id: 'lY3x33Q9p7Y', title: '🐚 作業用BGM 8'  },
-      { id: 'zoKoxAws_qg', title: '🐚 作業用BGM 9'  },
-      { id: 'Y5mkp8pRuug', title: '🐚 作業用BGM 10' },
-      { id: 'BYra5__dZt8', title: '🐚 作業用BGM 11' },
-      { id: 'HmYecNjo-YU', title: '🐚 作業用BGM 12' },
-      { id: 'QLDlN5QeFJY', title: '🐚 作業用BGM 13' },
-      { id: '_ES-qbX3PZw', title: '🐚 作業用BGM 14' },
-      { id: 'gum_BK-TaNc', title: '🐚 作業用BGM 15' },
-      { id: 'aR2wgXX1LKw', title: '🐚 作業用BGM 16' },
-      { id: '8YhHNFx6IG4', title: '🐚 作業用BGM 17' },
-      { id: 'fdvMXXki5aI', title: '🐚 作業用BGM 18' },
-      { id: '_daHDiMOhUg', title: '🐚 作業用BGM 19' },
-      { id: 'JHgbgOtCh6o', title: '🐚 作業用BGM 20' },
-      { id: 'EuEzwLm1rVg', title: '🐚 作業用BGM 21' },
-      { id: 'sO3IO8ITQbk', title: '🐚 作業用BGM 22' },
-      { id: '7Col7jbU58I', title: '🐚 作業用BGM 23' },
-      { id: 'jwls6XgOqeI', title: '🐚 作業用BGM 25' },
-      { id: 'pvB3cN41kLg', title: '🐚 作業用BGM 26' },
-      { id: '-0BGU5JNgx4', title: '🐚 作業用BGM 27' },
-      { id: 'tn8xWxJlTHk', title: '🐚 作業用BGM 28' },
-      { id: 'IUtaYi5tc7Q', title: '🐚 作業用BGM 29' },
-      { id: 'ftyC1THMVPU', title: '🐚 作業用BGM 30' },
-      { id: '1CaYmGW0JRk', title: '🐚 作業用BGM 31' },
-      { id: 'PX9qcl3O4ko', title: '🐚 作業用BGM 32' },
-      { id: 'txOSbA_gdAM', title: '🐚 作業用BGM 33' },
-      { id: 'ireQV7GrQzk', title: '🐚 作業用BGM 34' },
-      { id: 'KbY08F0C8Wg', title: '🐚 作業用BGM 35' },
-      { id: 'k4811LfeE88', title: '🐚 作業用BGM 36' },
-      { id: 'cYZSt-864jM', title: '🐚 作業用BGM 37' },
-      { id: 'VQHr0XkRoa0', title: '🐚 作業用BGM 38' },
-      { id: 'P6oqA-C5PHE', title: '🐚 作業用BGM 39' },
-      { id: 'Iud9PZCxIFg', title: '🐚 作業用BGM 40' },
-      { id: 'I8iyRjqQRaQ', title: '🐚 作業用BGM 41' },
+      { id: 'xvcXZbvYf0s', title: '作業用BGM 1'  },
+      { id: 'W0lUBVcvJiw', title: '作業用BGM 2'  },
+      { id: 'nlzxWWjB-ik', title: '作業用BGM 3'  },
+      { id: 'Fdp4u_SUjKE', title: '作業用BGM 4'  },
+      { id: 'o-wCYm_Pm6A', title: '作業用BGM 5'  },
+      { id: 'HoljfuP1POQ', title: '作業用BGM 6'  },
+      { id: 'rWyX16RTMgk', title: '作業用BGM 7'  },
+      { id: 'lY3x33Q9p7Y', title: '作業用BGM 8'  },
+      { id: 'zoKoxAws_qg', title: '作業用BGM 9'  },
+      { id: 'Y5mkp8pRuug', title: '作業用BGM 10' },
+      { id: 'BYra5__dZt8', title: '作業用BGM 11' },
+      { id: 'HmYecNjo-YU', title: '作業用BGM 12' },
+      { id: 'QLDlN5QeFJY', title: '作業用BGM 13' },
+      { id: '_ES-qbX3PZw', title: '作業用BGM 14' },
+      { id: 'gum_BK-TaNc', title: '作業用BGM 15' },
+      { id: 'aR2wgXX1LKw', title: '作業用BGM 16' },
+      { id: '8YhHNFx6IG4', title: '作業用BGM 17' },
+      { id: 'fdvMXXki5aI', title: '作業用BGM 18' },
+      { id: '_daHDiMOhUg', title: '作業用BGM 19' },
+      { id: 'JHgbgOtCh6o', title: '作業用BGM 20' },
+      { id: 'EuEzwLm1rVg', title: '作業用BGM 21' },
+      { id: 'sO3IO8ITQbk', title: '作業用BGM 22' },
+      { id: '7Col7jbU58I', title: '作業用BGM 23' },
+      { id: 'jwls6XgOqeI', title: '作業用BGM 25' },
+      { id: 'pvB3cN41kLg', title: '作業用BGM 26' },
+      { id: '-0BGU5JNgx4', title: '作業用BGM 27' },
+      { id: 'tn8xWxJlTHk', title: '作業用BGM 28' },
+      { id: 'IUtaYi5tc7Q', title: '作業用BGM 29' },
+      { id: 'ftyC1THMVPU', title: '作業用BGM 30' },
+      { id: '1CaYmGW0JRk', title: '作業用BGM 31' },
+      { id: 'PX9qcl3O4ko', title: '作業用BGM 32' },
+      { id: 'txOSbA_gdAM', title: '作業用BGM 33' },
+      { id: 'ireQV7GrQzk', title: '作業用BGM 34' },
+      { id: 'KbY08F0C8Wg', title: '作業用BGM 35' },
+      { id: 'k4811LfeE88', title: '作業用BGM 36' },
+      { id: 'cYZSt-864jM', title: '作業用BGM 37' },
+      { id: 'VQHr0XkRoa0', title: '作業用BGM 38' },
+      { id: 'P6oqA-C5PHE', title: '作業用BGM 39' },
+      { id: 'Iud9PZCxIFg', title: '作業用BGM 40' },
+      { id: 'I8iyRjqQRaQ', title: '作業用BGM 41' },
     ];
 
-    // ============================================================
-    // State
-    // ============================================================
+    // ── State ──
     let timerInterval;
-    let time        = 1500;
-    let running     = false;
-    let paused      = false;
-    let isWork      = true;
+    let time          = 1500;
+    let running       = false;
+    let paused        = false;
+    let isWork        = true;
     let workDuration  = 1500;
     let breakDuration = 300;
     let sessionCount  = 0;
     let shuffleMode   = false;
-    const CIRCUMFERENCE = 2 * Math.PI * 90; // 565.48
+    const CIRC = 2 * Math.PI * 90; // 565.48
 
-    // ============================================================
-    // Init
-    // ============================================================
+    // ── Init ──
     window.addEventListener('load', () => {
       loadBGMList();
       updateDisplay();
@@ -601,34 +551,39 @@
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Space' && !['INPUT','SELECT','BUTTON','TEXTAREA'].includes(e.target.tagName)) {
         e.preventDefault();
-        if (!running)      startLoop();
-        else if (paused)   resumeLoop();
-        else               pauseLoop();
+        mainBtnClick();
       }
     });
 
-    // ============================================================
-    // BGM 自動取得
-    // ============================================================
+    // ── Title helper: 【作業用BGM...】 プレフィックスを除去 ──
+    function cleanTitle(raw) {
+      return raw.replace(/^【[^】]*】\s*/u, '').trim() || raw;
+    }
+
+    // ── BGM loading ──
     async function loadBGMList() {
+      const statusEl = document.getElementById('apiStatus');
+
       if (!YT_API_KEY || !YT_CHANNEL_ID) {
         populateSelect(FALLBACK_VIDEOS);
+        statusEl.textContent = '⏳ タイトルを取得中...';
+        statusEl.className = 'api-status loading';
+        try {
+          const enriched = await fetchTitlesFromNoembed(FALLBACK_VIDEOS);
+          populateSelect(enriched);
+        } catch {}
+        statusEl.textContent = '';
         return;
       }
 
-      const statusEl = document.getElementById('apiStatus');
       statusEl.textContent = '⏳ BGMリストを取得中...';
       statusEl.className = 'api-status loading';
 
       try {
-        // チャンネルのアップロードプレイリストIDを取得
-        const chRes  = await fetch(
-          `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${YT_CHANNEL_ID}&key=${YT_API_KEY}`
-        );
+        const chRes  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${YT_CHANNEL_ID}&key=${YT_API_KEY}`);
         const chData = await chRes.json();
         const uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
 
-        // プレイリストから動画を全取得（ページネーション対応、最大200件）
         const videos = [];
         let pageToken = '';
         do {
@@ -636,41 +591,56 @@
           const res  = await fetch(url);
           const data = await res.json();
           for (const item of data.items) {
-            videos.push({
-              id:    item.snippet.resourceId.videoId,
-              title: item.snippet.title,
-            });
+            videos.push({ id: item.snippet.resourceId.videoId, title: item.snippet.title });
           }
           pageToken = data.nextPageToken || '';
         } while (pageToken && videos.length < 200);
 
         populateSelect(videos);
-        statusEl.textContent = `✅ ${videos.length}曲を取得しました`;
+        statusEl.textContent = `✅ ${videos.length}曲`;
         statusEl.className = 'api-status success';
-        setTimeout(() => { statusEl.textContent = ''; }, 4000);
+        setTimeout(() => { statusEl.textContent = ''; }, 3000);
 
       } catch (err) {
-        console.error('YouTube API error:', err);
         populateSelect(FALLBACK_VIDEOS);
-        statusEl.textContent = '⚠️ API取得失敗 — 保存済みリストを使用中';
+        statusEl.textContent = '⚠️ フォールバックリスト使用中';
         statusEl.className = 'api-status error';
       }
     }
 
+    async function fetchTitlesFromNoembed(videos) {
+      const result = videos.map(v => ({ ...v }));
+      const CHUNK = 6;
+      for (let i = 0; i < videos.length; i += CHUNK) {
+        await Promise.all(
+          videos.slice(i, i + CHUNK).map(async (v, idx) => {
+            try {
+              const res  = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${v.id}`);
+              const data = await res.json();
+              if (data.title) result[i + idx].title = data.title;
+            } catch {}
+          })
+        );
+      }
+      return result;
+    }
+
     function populateSelect(videos) {
-      const sel = document.getElementById('musicSelect');
+      const sel   = document.getElementById('musicSelect');
+      const prevId = sel.value;
       sel.innerHTML = '';
       videos.forEach(v => {
         const opt = document.createElement('option');
         opt.value = v.id;
-        opt.textContent = v.title;
+        opt.dataset.fullTitle = v.title;
+        const clean = cleanTitle(v.title);
+        opt.textContent = clean.length > 30 ? clean.slice(0, 30) + '…' : clean;
         sel.appendChild(opt);
       });
+      if (prevId) sel.value = prevId;
     }
 
-    // ============================================================
-    // Timer
-    // ============================================================
+    // ── Timer ──
     function updateDisplay() {
       const m = Math.floor(time / 60);
       const s = time % 60;
@@ -680,14 +650,12 @@
     }
 
     function updateRing() {
-      const total    = isWork ? workDuration : breakDuration;
-      const offset   = CIRCUMFERENCE * (1 - time / total);
-      const ring     = document.getElementById('timerRing');
-      ring.style.strokeDashoffset = offset;
-      ring.style.stroke = isWork ? 'var(--ring-work)' : 'var(--ring-break)';
+      const total  = isWork ? workDuration : breakDuration;
+      const offset = CIRC * (1 - time / total);
+      document.getElementById('timerRing').style.strokeDashoffset = offset;
     }
 
-    function setMode(workMin, breakMin, btn) {
+    function setMode(workMin, breakMin) {
       if (running && !paused) return;
       workDuration  = workMin * 60;
       breakDuration = breakMin * 60;
@@ -696,35 +664,50 @@
       updateDisplay();
       updateRing();
       document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
+      const cls = workMin === 25 ? '.tab-25' : '.tab-50';
+      document.querySelectorAll(cls).forEach(b => b.classList.add('active'));
+    }
+
+    // ── Main button (Start / Pause / Resume) ──
+    function mainBtnClick() {
+      if (!running)    startLoop();
+      else if (paused) resumeLoop();
+      else             pauseLoop();
+    }
+
+    function updateMainBtn() {
+      const btn = document.getElementById('mainBtn');
+      if (!running) {
+        btn.textContent = '▶ スタート';
+        btn.className   = 'btn-primary start';
+      } else if (paused) {
+        btn.textContent = '▶ 再開';
+        btn.className   = 'btn-primary start';
+      } else {
+        btn.textContent = '⏸ 一時停止';
+        btn.className   = 'btn-primary pause';
+      }
     }
 
     function startLoop() {
-      if (running) return;
       running = true;
       paused  = false;
       isWork  = true;
-      document.getElementById('startBtn').style.display = 'none';
-      document.getElementById('pauseBtn').style.display = '';
+      updateMainBtn();
+      document.getElementById('ringWrapper').classList.add('active');
       requestNotificationPermission();
       startPhase();
     }
 
     function pauseLoop() {
-      if (!running || paused) return;
       paused = true;
       clearInterval(timerInterval);
-      const btn = document.getElementById('pauseBtn');
-      btn.textContent = '▶ 再開';
-      btn.onclick = resumeLoop;
+      updateMainBtn();
     }
 
     function resumeLoop() {
-      if (!paused) return;
       paused = false;
-      const btn = document.getElementById('pauseBtn');
-      btn.textContent = '⏸ 一時停止';
-      btn.onclick = pauseLoop;
+      updateMainBtn();
       tick();
     }
 
@@ -740,12 +723,9 @@
       document.getElementById('bgmPlayer').src        = '';
       document.getElementById('message').textContent  = '';
       document.getElementById('phase').textContent    = '集中タイム';
-      document.getElementById('nowPlaying').innerHTML = '🎶 スタートすると再生されます';
-      document.getElementById('startBtn').style.display = '';
-      document.getElementById('pauseBtn').style.display = 'none';
-      const pb = document.getElementById('pauseBtn');
-      pb.textContent = '⏸ 一時停止';
-      pb.onclick = pauseLoop;
+      document.getElementById('nowPlaying').innerHTML = '🎵 スタートすると再生されます';
+      document.getElementById('ringWrapper').classList.remove('active');
+      updateMainBtn();
       document.title = 'RIRI ポモドーロ タイム 🌴';
     }
 
@@ -760,8 +740,8 @@
       const breakMin = breakDuration / 60;
       document.getElementById('phase').textContent   = isWork ? '集中タイム' : '休憩タイム';
       document.getElementById('message').textContent = isWork
-        ? `🌺 集中タイム開始！${breakMin}分後に休憩です`
-        : `🏖️ お疲れさま！${breakMin}分間休憩しましょう`;
+        ? `🌺 集中スタート！${breakMin}分後に休憩`
+        : `🏖️ お疲れさま！${breakMin}分間休憩しよう`;
 
       if (isWork) {
         if (shuffleMode) shuffleSelect();
@@ -786,9 +766,9 @@
             sessionCount++;
             document.getElementById('sessionCount').textContent = sessionCount;
             document.getElementById('focusTime').textContent    = sessionCount * (workDuration / 60);
-            sendNotification('🏖️ 休憩タイム！', `${workDuration/60}分間お疲れさまでした。休憩しましょう。`);
+            sendNotification('🏖️ 休憩タイム！', `${workDuration/60}分間お疲れさまでした。`);
           } else {
-            sendNotification('🌺 集中タイム！', `休憩終了！${workDuration/60}分間集中しましょう。`);
+            sendNotification('🌺 集中タイム！', `さあ${workDuration/60}分間集中しましょう！`);
           }
           isWork = !isWork;
           startPhase();
@@ -796,17 +776,17 @@
       }, 1000);
     }
 
-    // ============================================================
-    // BGM
-    // ============================================================
+    // ── BGM ──
     function updateBGM() {
       const sel     = document.getElementById('musicSelect');
       const videoId = sel.value;
       if (!videoId) return;
-      const title   = sel.options[sel.selectedIndex]?.text || '';
+      const opt     = sel.options[sel.selectedIndex];
+      const title   = opt?.dataset.fullTitle || opt?.text || '';
+      const clean   = cleanTitle(title);
       document.getElementById('bgmPlayer').src =
         `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}`;
-      document.getElementById('nowPlaying').innerHTML = `▶ <span>${title}</span>`;
+      document.getElementById('nowPlaying').innerHTML = `▶ <span>${clean}</span>`;
     }
 
     function toggleShuffle() {
@@ -821,17 +801,13 @@
 
     function playNext() {
       const sel = document.getElementById('musicSelect');
-      if (shuffleMode) {
-        shuffleSelect();
-      } else {
-        sel.selectedIndex = (sel.selectedIndex + 1) % sel.options.length;
-      }
+      sel.selectedIndex = shuffleMode
+        ? Math.floor(Math.random() * sel.options.length)
+        : (sel.selectedIndex + 1) % sel.options.length;
       updateBGM();
     }
 
-    // ============================================================
-    // Notifications
-    // ============================================================
+    // ── Notifications ──
     function requestNotificationPermission() {
       if ('Notification' in window && Notification.permission === 'default') {
         Notification.requestPermission();
