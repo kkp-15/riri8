@@ -66,8 +66,9 @@
     .app-header {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       padding: 0.1rem 0.2rem;
+      gap: 0.6rem;
     }
 
     .app-logo {
@@ -80,39 +81,35 @@
       letter-spacing: 0.02em;
     }
 
-    /* ── Time Picker Card ── */
-    .time-picker-card {
+    /* ── Time Picker (header内) ── */
+    .time-picker {
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 0.6rem 1rem;
+      gap: 0;
     }
 
     .time-field {
       display: flex;
       align-items: center;
-      gap: 0.45rem;
-      flex: 1;
-      justify-content: center;
+      gap: 0.3rem;
     }
 
     .time-label {
-      font-size: 0.7rem;
+      font-size: 0.62rem;
       font-weight: 700;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      min-width: 2em;
+      letter-spacing: 0.06em;
     }
 
     .time-btn {
-      width: 30px;
-      height: 30px;
-      border: 2px solid #dde1e4;
+      width: 24px;
+      height: 24px;
+      border: 1.5px solid #dde1e4;
       background: #f5f6f7;
-      border-radius: 9px;
+      border-radius: 7px;
       cursor: pointer;
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -127,24 +124,24 @@
     .time-btn:disabled { opacity: 0.28; cursor: default; pointer-events: none; }
 
     .time-val {
-      font-size: 1.2rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--text);
-      min-width: 2.4ch;
+      min-width: 2ch;
       text-align: center;
     }
 
     .time-unit {
-      font-size: 0.72rem;
+      font-size: 0.62rem;
       color: var(--muted);
       font-weight: 500;
     }
 
     .time-divider {
       width: 1px;
-      height: 22px;
+      height: 18px;
       background: var(--border);
-      margin: 0 0.3rem;
+      margin: 0 0.45rem;
     }
 
     /* ── Card ── */
@@ -461,26 +458,24 @@
     <!-- Header -->
     <header class="app-header">
       <span class="app-logo">RIRI ∞ ポモドーロ</span>
+      <div class="time-picker">
+        <div class="time-field">
+          <span class="time-label">集中</span>
+          <button class="time-btn" id="workMinus" onclick="adjustTime('work',-5)">−</button>
+          <span class="time-val" id="workVal">25</span>
+          <button class="time-btn" id="workPlus"  onclick="adjustTime('work',5)">＋</button>
+          <span class="time-unit">分</span>
+        </div>
+        <div class="time-divider"></div>
+        <div class="time-field">
+          <span class="time-label">休憩</span>
+          <button class="time-btn" id="breakMinus" onclick="adjustTime('break',-5)">−</button>
+          <span class="time-val" id="breakVal">5</span>
+          <button class="time-btn" id="breakPlus"  onclick="adjustTime('break',5)">＋</button>
+          <span class="time-unit">分</span>
+        </div>
+      </div>
     </header>
-
-    <!-- Time Picker -->
-    <div class="card time-picker-card">
-      <div class="time-field">
-        <span class="time-label">集中</span>
-        <button class="time-btn" id="workMinus" onclick="adjustTime('work',-5)">−</button>
-        <span class="time-val" id="workVal">25</span>
-        <button class="time-btn" id="workPlus"  onclick="adjustTime('work',5)">＋</button>
-        <span class="time-unit">分</span>
-      </div>
-      <div class="time-divider"></div>
-      <div class="time-field">
-        <span class="time-label">休憩</span>
-        <button class="time-btn" id="breakMinus" onclick="adjustTime('break',-5)">−</button>
-        <span class="time-val" id="breakVal">5</span>
-        <button class="time-btn" id="breakPlus"  onclick="adjustTime('break',5)">＋</button>
-        <span class="time-unit">分</span>
-      </div>
-    </div>
 
     <!-- Timer -->
     <div class="card timer-card">
