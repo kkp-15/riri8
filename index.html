@@ -705,15 +705,26 @@
 
     function setMode(workMin, breakMin) {
       if (running && !paused) return;
+      clearInterval(timerInterval);
       workDuration  = workMin * 60;
       breakDuration = breakMin * 60;
-      time   = workDuration;
-      isWork = true;
+      time    = workDuration;
+      isWork  = true;
+      running = false;
+      paused  = false;
       updateDisplay();
       updateRing();
+      document.body.className = '';
+      if (ytReady && ytPlayer) ytPlayer.stopVideo();
+      document.getElementById('message').textContent  = '';
+      document.getElementById('phase').textContent    = '集中タイム';
+      document.getElementById('nowPlaying').innerHTML = '🎵 スタートすると再生されます';
+      document.getElementById('ringWrapper').classList.remove('active');
       document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
       const cls = workMin === 25 ? '.tab-25' : '.tab-50';
       document.querySelectorAll(cls).forEach(b => b.classList.add('active'));
+      updateMainBtn();
+      document.title = 'RIRI ポモドーロ タイム 🌴';
     }
 
     // ── Main button (Start / Pause / Resume) ──
