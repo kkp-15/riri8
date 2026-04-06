@@ -72,7 +72,7 @@
     }
 
     .app-logo {
-      font-size: 1.15rem;
+      font-size: 1.45rem;
       font-weight: 700;
       background: linear-gradient(120deg, var(--coral), var(--gold));
       -webkit-background-clip: text;
@@ -84,8 +84,9 @@
     /* ── Time Picker (header内) ── */
     .time-picker {
       display: flex;
-      align-items: center;
-      gap: 0;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.35rem;
     }
 
     .time-field {
@@ -472,7 +473,6 @@
           <button class="time-btn" id="workPlus"  onclick="adjustTime('work',5)">＋</button>
           <span class="time-unit">分</span>
         </div>
-        <div class="time-divider"></div>
         <div class="time-field">
           <span class="time-label">休憩</span>
           <button class="time-btn" id="breakMinus" onclick="adjustTime('break',-5)">−</button>
