@@ -4,19 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RIRI ポモドーロ タイム 🌴</title>
-
-  <!-- Favicon（ファビコン） -->
   <link rel="icon" href="favicon.ico" />
-
-  <!-- OGP設定（SNSカード） -->
-  <meta property="og:title" content="ポモドーロ タイム 🌴 - 癒しBGMと集中タイマー" />
+  <meta property="og:title" content="RIRI ポモドーロ タイム 🌴 - 癒しBGMと集中タイマー" />
   <meta property="og:description" content="癒しのBGMと25分集中＋5分休憩のタイマーで、もくもく作業をサポート！" />
   <meta property="og:image" content="https://riri8.kkpwebninja.com/image/card.png" />
   <meta property="og:url" content="https://riri8.kkpwebninja.com/" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Google Analytics -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2LM85GJN0L"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -26,255 +23,825 @@
   </script>
 
   <style>
+    :root {
+      --accent: #00d4aa;
+      --accent2: #ff6b9d;
+      --ring-work: #00d4aa;
+      --ring-break: #74b9ff;
+      --card-bg: rgba(255, 255, 255, 0.07);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --text: #e8f4f8;
+      --text-muted: rgba(232, 244, 248, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: "Hiragino Kaku Gothic ProN", sans-serif;
-      margin: 0;
-      padding: 2rem;
+      font-family: 'Poppins', 'Hiragino Kaku Gothic ProN', sans-serif;
+      min-height: 100vh;
+      color: var(--text);
+      background: linear-gradient(-45deg, #080e1a, #0d1e35, #0a1220, #081828);
+      background-size: 400% 400%;
+      animation: gradientShift 20s ease infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 3rem;
+    }
+
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    body.break-mode {
+      background: linear-gradient(-45deg, #0a0818, #12082a, #0a1020, #060d20);
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.35) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 50% 65%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 10% 75%, rgba(255,255,255,0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.28) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 90%, rgba(255,255,255,0.18) 0%, transparent 100%),
+        radial-gradient(1px 1px at 65% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 45% 15%, rgba(255,255,255,0.22) 0%, transparent 100%),
+        radial-gradient(1px 1px at 75% 55%, rgba(255,255,255,0.25) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 1.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* === Header === */
+    .header {
       text-align: center;
-      transition: background-color 0.8s ease;
+      margin-bottom: 1.5rem;
     }
-    body.work {
-      background: linear-gradient(to bottom, #e0f7f6, #c8f4e0);
-      color: #333;
+
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, var(--accent), #7dd3fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    body.break {
-      background: linear-gradient(to bottom, #d0eaff, #a0d2f6);
-      color: #003366;
+
+    .header p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
     }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+
+    /* === Timer Card === */
+    .timer-card {
+      text-align: center;
     }
-    p.subtitle {
-      margin-top: 0;
-      margin-bottom: 1rem;
-      font-size: 1rem;
+
+    .mode-tabs {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1.6rem;
     }
-    .description {
-      max-width: 600px;
-      margin: 0 auto 2rem auto;
-      text-align: left;
-      font-size: 0.95rem;
-      background-color: #ffffffcc;
-      padding: 1rem;
-      border-radius: 1rem;
-    }
-    #timer {
-      font-size: 4rem;
-      margin: 1rem 0;
-    }
-    #message {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
-      min-height: 1.5em;
-    }
-    button, select {
-      font-size: 1.2rem;
-      padding: 0.6rem 1.2rem;
-      margin: 0.5rem;
-      border: none;
-      background-color: #b2dfdb;
-      color: #004d40;
-      border-radius: 1rem;
+
+    .mode-tab {
+      padding: 0.4rem 1.3rem;
+      border-radius: 50px;
+      border: 1px solid var(--card-border);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.82rem;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: all 0.3s;
     }
-    button:hover, select:hover {
-      background-color: #80cbc4;
+
+    .mode-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #080e1a;
+      font-weight: 600;
     }
+
+    .timer-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1.4rem;
+    }
+
+    .timer-svg {
+      width: 210px;
+      height: 210px;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.07);
+      stroke-width: 9;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke: var(--ring-work);
+      stroke-width: 9;
+      stroke-linecap: round;
+      stroke-dasharray: 565.48;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.9s linear, stroke 0.8s ease;
+    }
+
+    .timer-display {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .timer-time {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .timer-phase {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    #message {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      min-height: 1.4em;
+      margin-bottom: 1.3rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.7rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 0.65rem 1.5rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.25s;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #00b894);
+      color: #080e1a;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 212, 170, 0.4);
+    }
+
+    .btn-pause {
+      background: linear-gradient(135deg, #fdcb6e, #e17055);
+      color: #080e1a;
+    }
+
+    .btn-pause:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(253, 203, 110, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.17);
+      transform: translateY(-2px);
+    }
+
+    .session-info {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      margin-top: 1.3rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .session-stat {
+      text-align: center;
+    }
+
+    .session-stat .value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .session-stat .label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* === BGM Card === */
+    .bgm-card .card-label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.8rem;
+    }
+
+    .bgm-controls {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    select {
+      flex: 1;
+      font-family: inherit;
+      font-size: 0.88rem;
+      padding: 0.65rem 2rem 0.65rem 1rem;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border-radius: 12px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='rgba(232,244,248,0.45)' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    select option {
+      background: #0d1e35;
+      color: var(--text);
+    }
+
+    .btn-icon {
+      font-size: 1.1rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.25s;
+      font-family: inherit;
+      line-height: 1;
+    }
+
+    .btn-icon:hover, .btn-icon.active {
+      background: var(--accent);
+      color: #080e1a;
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+
+    .now-playing {
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .now-playing span { color: var(--accent); }
+
+    .api-status {
+      margin-top: 0.4rem;
+      font-size: 0.72rem;
+      min-height: 1em;
+    }
+
+    .api-status.loading { color: #fdcb6e; }
+    .api-status.success { color: var(--accent); }
+    .api-status.error   { color: var(--accent2); }
+
+    /* === YouTube Embed === */
+    .embed-wrapper {
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
     iframe {
       width: 100%;
-      max-width: 560px;
-      height: 315px;
-      margin-top: 2rem;
-      border-radius: 1rem;
+      height: 275px;
       border: none;
+      display: block;
     }
-    .footer {
-      margin-top: 2rem;
-      font-size: 1rem;
-      font-weight: bold;
+
+    /* === About === */
+    .about-card {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.75;
     }
-    .footer a {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      margin: 0.25rem;
-      border-radius: 1rem;
+
+    .about-card strong { color: var(--text); }
+
+    /* === Footer === */
+    .footer { text-align: center; }
+
+    .footer p {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 0.9rem;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+    }
+
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 50px;
       text-decoration: none;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-      transition: background-color 0.3s, transform 0.2s;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .youtube-btn {
-      background-color: #ff4444;
-      color: #fff;
+
+    .social-links a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
     }
-    .x-btn {
-      background-color: #000;
-      color: #fff;
-    }
-    .insta-btn {
-      background-color: #e1306c;
-      color: #fff;
-    }
-    .tiktok-btn {
-      background-color: #010101; /* TikTokの黒ベース */
-      color: #fff;
-    }
-    .footer a:hover {
-      transform: scale(1.05);
-      text-decoration: none;
+
+    .youtube-btn { background: #ff4444; color: #fff; }
+    .x-btn { background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+    .insta-btn { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
+    .tiktok-btn { background: #010101; color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+
+    /* === Responsive === */
+    @media (max-width: 380px) {
+      .timer-time { font-size: 2.3rem; }
+      .timer-svg { width: 180px; height: 180px; }
     }
   </style>
 </head>
-<body class="work">
-  <h1>RIRI🌺 ポモドーロ タイム 🌴</h1>
-  <p class="subtitle">癒しの音楽で、もくもく集中🏝️</p>
 
-  <div class="description">
-    <strong>ポモドーロ・テクニックとは？</strong><br />
-    25分集中＋5分休憩を1セットとして繰り返す、シンプルで効果的な時間管理法です。<br />
-    このサイトでは、集中タイマーと癒しのBGMで「もくもく作業」をサポートします🎺
-  </div>
+<body>
+  <div class="container">
 
-  <label for="musicSelect">🎶 曲を選ぶ：</label>
-  <select id="musicSelect" onchange="updateBGM()">
-    <option value="xvcXZbvYf0s">🐚 作業用BGM1</option>
-    <option value="W0lUBVcvJiw">🐚 作業用BGM2</option>
-    <option value="nlzxWWjB-ik">🐚 作業用BGM3</option>
-    <option value="Fdp4u_SUjKE">🐚 作業用BGM4</option>
-    <option value="o-wCYm_Pm6A">🐚 作業用BGM5</option>
-    <option value="HoljfuP1POQ">🐚 作業用BGM6</option>
-    <option value="rWyX16RTMgk">🐚 作業用BGM7</option>
-    <option value="lY3x33Q9p7Y">🐚 作業用BGM8</option>
-    <option value="zoKoxAws_qg">🐚 作業用BGM9</option>
-    <option value="Y5mkp8pRuug">🐚 作業用BGM10</option>
-    <option value="BYra5__dZt8">🐚 作業用BGM11</option>
-    <option value="HmYecNjo-YU">🐚 作業用BGM12</option>
-    <option value="QLDlN5QeFJY">🐚 作業用BGM13</option>
-    <option value="_ES-qbX3PZw">🐚 作業用BGM14</option>
-    <option value="gum_BK-TaNc">🐚 作業用BGM15</option>
-    <option value="aR2wgXX1LKw">🐚 作業用BGM16</option>
-    <option value="8YhHNFx6IG4">🐚 作業用BGM17</option>
-    <option value="fdvMXXki5aI">🐚 作業用BGM18</option>
-    <option value="_daHDiMOhUg">🐚 作業用BGM19</option>
-    <option value="JHgbgOtCh6o">🐚 作業用BGM20</option>
-    <option value="EuEzwLm1rVg">🐚 作業用BGM21</option>
-    <option value="sO3IO8ITQbk">🐚 作業用BGM22</option>
-    <option value="7Col7jbU58I">🐚 作業用BGM23</option>
-    <option value="HoljfuP1POQ">🐚 作業用BGM24</option>
-    <option value="jwls6XgOqeI">🐚 作業用BGM25</option>
-    <option value="pvB3cN41kLg">🐚 作業用BGM26</option>
-    <option value="-0BGU5JNgx4">🐚 作業用BGM27</option>
-    <option value="tn8xWxJlTHk">🐚 作業用BGM28</option>
-    <option value="IUtaYi5tc7Q">🐚 作業用BGM29</option>
-    <option value="ftyC1THMVPU">🐚 作業用BGM30</option>
-    <option value="1CaYmGW0JRk">🐚 作業用BGM31</option>
-    <option value="PX9qcl3O4ko">🐚 作業用BGM32</option>
-    <option value="txOSbA_gdAM">🐚 作業用BGM33</option>
-    <option value="ireQV7GrQzk">🐚 作業用BGM34</option>
-    <option value="KbY08F0C8Wg">🐚 作業用BGM35</option>
-    <option value="k4811LfeE88">🐚 作業用BGM36</option>
-    <option value="cYZSt-864jM">🐚 作業用BGM37</option>
-    <option value="VQHr0XkRoa0">🐚 作業用BGM38</option>
-    <option value="P6oqA-C5PHE">🐚 作業用BGM39</option>
-    <option value="Iud9PZCxIFg">🐚 作業用BGM40</option>
-    <option value="I8iyRjqQRaQ">🐚 作業用BGM41</option>
-  </select>
+    <!-- Header -->
+    <div class="header">
+      <h1>RIRI 🌺 ポモドーロ タイム</h1>
+      <p>癒しの音楽で、もくもく集中 🏝️</p>
+    </div>
 
-  <div>
-    <button onclick="setMode(25, 5)">⏱️ 25分/5分</button>
-    <button onclick="setMode(50, 10)">⏱️ 50分/10分</button>
-  </div>
+    <!-- Timer Card -->
+    <div class="card timer-card">
+      <div class="mode-tabs">
+        <button class="mode-tab active" onclick="setMode(25, 5, this)">25 / 5 分</button>
+        <button class="mode-tab" onclick="setMode(50, 10, this)">50 / 10 分</button>
+      </div>
 
-  <div id="timer">25:00</div>
-  <div id="message"></div>
+      <div class="timer-wrapper">
+        <svg class="timer-svg" viewBox="0 0 200 200">
+          <circle class="ring-bg"       cx="100" cy="100" r="90"/>
+          <circle class="ring-progress" cx="100" cy="100" r="90" id="timerRing"/>
+        </svg>
+        <div class="timer-display">
+          <div class="timer-time" id="timer">25:00</div>
+          <div class="timer-phase" id="phase">集中タイム</div>
+        </div>
+      </div>
 
-  <div>
-    <button onclick="startLoop()">スタート</button>
-    <button onclick="resetLoop()">リセット</button>
-  </div>
+      <div id="message"></div>
 
-  <iframe id="bgmPlayer" allow="autoplay"></iframe>
+      <div class="btn-group">
+        <button class="btn btn-primary" id="startBtn"  onclick="startLoop()">▶ スタート</button>
+        <button class="btn btn-pause"   id="pauseBtn"  onclick="pauseLoop()" style="display:none">⏸ 一時停止</button>
+        <button class="btn btn-secondary"              onclick="resetLoop()">↺ リセット</button>
+      </div>
 
-  <div class="footer">
-    <a class="youtube-btn" href="https://youtube.com/@riri8bgm" target="_blank">YouTube</a>
-    <a class="x-btn" href="https://x.com/riri8bgm" target="_blank">X</a>
-    <a class="insta-btn" href="https://instagram.com/riri8bgm" target="_blank">Instagram</a>
-    <a class="tiktok-btn" href="https://www.tiktok.com/@riri8bgm?lang=ja-JP&is_from_webapp=1&sender_device=mobile&sender_web_id=7534621035410654738" target="_blank">TikTok</a>
+      <div class="session-info">
+        <div class="session-stat">
+          <div class="value" id="sessionCount">0</div>
+          <div class="label">セッション</div>
+        </div>
+        <div class="session-stat">
+          <div class="value" id="focusTime">0</div>
+          <div class="label">集中 (分)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BGM Card -->
+    <div class="card bgm-card">
+      <span class="card-label">🎵 BGM を選ぶ</span>
+      <div class="bgm-controls">
+        <select id="musicSelect" onchange="updateBGM()">
+          <option value="">読み込み中...</option>
+        </select>
+        <button class="btn-icon" id="shuffleBtn" onclick="toggleShuffle()" title="シャッフル">🔀</button>
+        <button class="btn-icon" onclick="playNext()" title="次の曲">⏭</button>
+      </div>
+      <div class="now-playing" id="nowPlaying">🎶 スタートすると再生されます</div>
+      <div class="api-status" id="apiStatus"></div>
+    </div>
+
+    <!-- YouTube Embed -->
+    <div class="card">
+      <div class="embed-wrapper">
+        <iframe id="bgmPlayer" allow="autoplay"></iframe>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="card about-card">
+      <strong>ポモドーロ・テクニックとは？</strong><br />
+      25分集中＋5分休憩を1セットとして繰り返す、シンプルで効果的な時間管理法です。
+      集中タイマーと癒しのBGMで「もくもく作業」をサポートします 🎺<br /><br />
+      <span style="font-size:0.78rem">💡 Space キーでスタート / 一時停止できます</span>
+    </div>
+
+    <!-- Footer -->
+    <div class="card footer">
+      <p>RIRIのSNSをフォローしてね ✨</p>
+      <div class="social-links">
+        <a class="youtube-btn" href="https://youtube.com/@riri8bgm"    target="_blank">▶ YouTube</a>
+        <a class="x-btn"       href="https://x.com/riri8bgm"           target="_blank">𝕏 X</a>
+        <a class="insta-btn"   href="https://instagram.com/riri8bgm"   target="_blank">📷 Instagram</a>
+        <a class="tiktok-btn"  href="https://www.tiktok.com/@riri8bgm?lang=ja-JP" target="_blank">♪ TikTok</a>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    let timer;
-    let time = 1500;
-    let running = false;
-    let isWork = true;
-    let workDuration = 1500;
-    let breakDuration = 300;
+    // ============================================================
+    // YouTube API 設定（BGM自動取得）
+    //
+    // BGMをチャンネルから自動取得するには：
+    //   1. Google Cloud Console で「YouTube Data API v3」を有効化
+    //   2. APIキーを作成し YT_API_KEY に貼り付ける
+    //      ※ ドメイン riri8.kkpwebninja.com に制限することを推奨
+    //   3. YT_CHANNEL_ID に @riri8bgm のチャンネルID（UCで始まる）を設定
+    //      ※ youtube.com/@riri8bgm を開き、ページソースで "channelId" を検索
+    //
+    // 未設定の場合はフォールバックリストを使用します
+    // ============================================================
+    const YT_API_KEY    = '';  // 例: 'AIzaSyABC123...'
+    const YT_CHANNEL_ID = '';  // 例: 'UCxxxxxxxxxxxxxxxxxxxxxxxx'
 
-    function updateDisplay() {
-      const minutes = Math.floor(time / 60);
-      const seconds = time % 60;
-      document.getElementById("timer").textContent =
-        `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    const FALLBACK_VIDEOS = [
+      { id: 'xvcXZbvYf0s', title: '🐚 作業用BGM 1'  },
+      { id: 'W0lUBVcvJiw', title: '🐚 作業用BGM 2'  },
+      { id: 'nlzxWWjB-ik', title: '🐚 作業用BGM 3'  },
+      { id: 'Fdp4u_SUjKE', title: '🐚 作業用BGM 4'  },
+      { id: 'o-wCYm_Pm6A', title: '🐚 作業用BGM 5'  },
+      { id: 'HoljfuP1POQ', title: '🐚 作業用BGM 6'  },
+      { id: 'rWyX16RTMgk', title: '🐚 作業用BGM 7'  },
+      { id: 'lY3x33Q9p7Y', title: '🐚 作業用BGM 8'  },
+      { id: 'zoKoxAws_qg', title: '🐚 作業用BGM 9'  },
+      { id: 'Y5mkp8pRuug', title: '🐚 作業用BGM 10' },
+      { id: 'BYra5__dZt8', title: '🐚 作業用BGM 11' },
+      { id: 'HmYecNjo-YU', title: '🐚 作業用BGM 12' },
+      { id: 'QLDlN5QeFJY', title: '🐚 作業用BGM 13' },
+      { id: '_ES-qbX3PZw', title: '🐚 作業用BGM 14' },
+      { id: 'gum_BK-TaNc', title: '🐚 作業用BGM 15' },
+      { id: 'aR2wgXX1LKw', title: '🐚 作業用BGM 16' },
+      { id: '8YhHNFx6IG4', title: '🐚 作業用BGM 17' },
+      { id: 'fdvMXXki5aI', title: '🐚 作業用BGM 18' },
+      { id: '_daHDiMOhUg', title: '🐚 作業用BGM 19' },
+      { id: 'JHgbgOtCh6o', title: '🐚 作業用BGM 20' },
+      { id: 'EuEzwLm1rVg', title: '🐚 作業用BGM 21' },
+      { id: 'sO3IO8ITQbk', title: '🐚 作業用BGM 22' },
+      { id: '7Col7jbU58I', title: '🐚 作業用BGM 23' },
+      { id: 'jwls6XgOqeI', title: '🐚 作業用BGM 25' },
+      { id: 'pvB3cN41kLg', title: '🐚 作業用BGM 26' },
+      { id: '-0BGU5JNgx4', title: '🐚 作業用BGM 27' },
+      { id: 'tn8xWxJlTHk', title: '🐚 作業用BGM 28' },
+      { id: 'IUtaYi5tc7Q', title: '🐚 作業用BGM 29' },
+      { id: 'ftyC1THMVPU', title: '🐚 作業用BGM 30' },
+      { id: '1CaYmGW0JRk', title: '🐚 作業用BGM 31' },
+      { id: 'PX9qcl3O4ko', title: '🐚 作業用BGM 32' },
+      { id: 'txOSbA_gdAM', title: '🐚 作業用BGM 33' },
+      { id: 'ireQV7GrQzk', title: '🐚 作業用BGM 34' },
+      { id: 'KbY08F0C8Wg', title: '🐚 作業用BGM 35' },
+      { id: 'k4811LfeE88', title: '🐚 作業用BGM 36' },
+      { id: 'cYZSt-864jM', title: '🐚 作業用BGM 37' },
+      { id: 'VQHr0XkRoa0', title: '🐚 作業用BGM 38' },
+      { id: 'P6oqA-C5PHE', title: '🐚 作業用BGM 39' },
+      { id: 'Iud9PZCxIFg', title: '🐚 作業用BGM 40' },
+      { id: 'I8iyRjqQRaQ', title: '🐚 作業用BGM 41' },
+    ];
+
+    // ============================================================
+    // State
+    // ============================================================
+    let timerInterval;
+    let time        = 1500;
+    let running     = false;
+    let paused      = false;
+    let isWork      = true;
+    let workDuration  = 1500;
+    let breakDuration = 300;
+    let sessionCount  = 0;
+    let shuffleMode   = false;
+    const CIRCUMFERENCE = 2 * Math.PI * 90; // 565.48
+
+    // ============================================================
+    // Init
+    // ============================================================
+    window.addEventListener('load', () => {
+      loadBGMList();
+      updateDisplay();
+      updateRing();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !['INPUT','SELECT','BUTTON','TEXTAREA'].includes(e.target.tagName)) {
+        e.preventDefault();
+        if (!running)      startLoop();
+        else if (paused)   resumeLoop();
+        else               pauseLoop();
+      }
+    });
+
+    // ============================================================
+    // BGM 自動取得
+    // ============================================================
+    async function loadBGMList() {
+      if (!YT_API_KEY || !YT_CHANNEL_ID) {
+        populateSelect(FALLBACK_VIDEOS);
+        return;
+      }
+
+      const statusEl = document.getElementById('apiStatus');
+      statusEl.textContent = '⏳ BGMリストを取得中...';
+      statusEl.className = 'api-status loading';
+
+      try {
+        // チャンネルのアップロードプレイリストIDを取得
+        const chRes  = await fetch(
+          `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${YT_CHANNEL_ID}&key=${YT_API_KEY}`
+        );
+        const chData = await chRes.json();
+        const uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
+
+        // プレイリストから動画を全取得（ページネーション対応、最大200件）
+        const videos = [];
+        let pageToken = '';
+        do {
+          const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${uploadsId}&key=${YT_API_KEY}${pageToken ? '&pageToken=' + pageToken : ''}`;
+          const res  = await fetch(url);
+          const data = await res.json();
+          for (const item of data.items) {
+            videos.push({
+              id:    item.snippet.resourceId.videoId,
+              title: item.snippet.title,
+            });
+          }
+          pageToken = data.nextPageToken || '';
+        } while (pageToken && videos.length < 200);
+
+        populateSelect(videos);
+        statusEl.textContent = `✅ ${videos.length}曲を取得しました`;
+        statusEl.className = 'api-status success';
+        setTimeout(() => { statusEl.textContent = ''; }, 4000);
+
+      } catch (err) {
+        console.error('YouTube API error:', err);
+        populateSelect(FALLBACK_VIDEOS);
+        statusEl.textContent = '⚠️ API取得失敗 — 保存済みリストを使用中';
+        statusEl.className = 'api-status error';
+      }
     }
 
-    function updateBGM() {
-      const videoId = document.getElementById("musicSelect").value;
-      const iframe = document.getElementById("bgmPlayer");
-      if (isWork && running) {
-        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}`;
-      }
+    function populateSelect(videos) {
+      const sel = document.getElementById('musicSelect');
+      sel.innerHTML = '';
+      videos.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.id;
+        opt.textContent = v.title;
+        sel.appendChild(opt);
+      });
+    }
+
+    // ============================================================
+    // Timer
+    // ============================================================
+    function updateDisplay() {
+      const m = Math.floor(time / 60);
+      const s = time % 60;
+      const txt = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      document.getElementById('timer').textContent = txt;
+      document.title = `${txt} — RIRI ポモドーロ`;
+    }
+
+    function updateRing() {
+      const total    = isWork ? workDuration : breakDuration;
+      const offset   = CIRCUMFERENCE * (1 - time / total);
+      const ring     = document.getElementById('timerRing');
+      ring.style.strokeDashoffset = offset;
+      ring.style.stroke = isWork ? 'var(--ring-work)' : 'var(--ring-break)';
+    }
+
+    function setMode(workMin, breakMin, btn) {
+      if (running && !paused) return;
+      workDuration  = workMin * 60;
+      breakDuration = breakMin * 60;
+      time   = workDuration;
+      isWork = true;
+      updateDisplay();
+      updateRing();
+      document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
     }
 
     function startLoop() {
       if (running) return;
       running = true;
-      isWork = true;
+      paused  = false;
+      isWork  = true;
+      document.getElementById('startBtn').style.display = 'none';
+      document.getElementById('pauseBtn').style.display = '';
+      requestNotificationPermission();
       startPhase();
     }
 
-    function setMode(workMin, breakMin) {
-      if (running) return;
-      workDuration = workMin * 60;
-      breakDuration = breakMin * 60;
-      time = workDuration;
+    function pauseLoop() {
+      if (!running || paused) return;
+      paused = true;
+      clearInterval(timerInterval);
+      const btn = document.getElementById('pauseBtn');
+      btn.textContent = '▶ 再開';
+      btn.onclick = resumeLoop;
+    }
+
+    function resumeLoop() {
+      if (!paused) return;
+      paused = false;
+      const btn = document.getElementById('pauseBtn');
+      btn.textContent = '⏸ 一時停止';
+      btn.onclick = pauseLoop;
+      tick();
+    }
+
+    function resetLoop() {
+      clearInterval(timerInterval);
+      time    = workDuration;
+      running = false;
+      paused  = false;
+      isWork  = true;
       updateDisplay();
+      updateRing();
+      document.body.className = '';
+      document.getElementById('bgmPlayer').src        = '';
+      document.getElementById('message').textContent  = '';
+      document.getElementById('phase').textContent    = '集中タイム';
+      document.getElementById('nowPlaying').innerHTML = '🎶 スタートすると再生されます';
+      document.getElementById('startBtn').style.display = '';
+      document.getElementById('pauseBtn').style.display = 'none';
+      const pb = document.getElementById('pauseBtn');
+      pb.textContent = '⏸ 一時停止';
+      pb.onclick = pauseLoop;
+      document.title = 'RIRI ポモドーロ タイム 🌴';
     }
 
     function startPhase() {
-      clearInterval(timer);
-      document.body.className = isWork ? "work" : "break";
+      clearInterval(timerInterval);
+      document.body.className = isWork ? '' : 'break-mode';
       time = isWork ? workDuration : breakDuration;
       updateDisplay();
+      updateRing();
 
-      document.getElementById("message").textContent = isWork
-        ? `🌺 集中タイム開始！次は${breakDuration / 60}分間の休憩です 🏝️`
-        : `🏖️ 休憩スタート！次は${workDuration / 60}分の作業タイムです 🌊`;
+      const workMin  = workDuration / 60;
+      const breakMin = breakDuration / 60;
+      document.getElementById('phase').textContent   = isWork ? '集中タイム' : '休憩タイム';
+      document.getElementById('message').textContent = isWork
+        ? `🌺 集中タイム開始！${breakMin}分後に休憩です`
+        : `🏖️ お疲れさま！${breakMin}分間休憩しましょう`;
 
-      updateBGM();
+      if (isWork) {
+        if (shuffleMode) shuffleSelect();
+        updateBGM();
+      } else {
+        document.getElementById('bgmPlayer').src        = '';
+        document.getElementById('nowPlaying').innerHTML = '🏖️ 休憩中...';
+      }
 
-      timer = setInterval(() => {
+      tick();
+    }
+
+    function tick() {
+      timerInterval = setInterval(() => {
         if (time > 0) {
           time--;
           updateDisplay();
+          updateRing();
         } else {
+          clearInterval(timerInterval);
+          if (isWork) {
+            sessionCount++;
+            document.getElementById('sessionCount').textContent = sessionCount;
+            document.getElementById('focusTime').textContent    = sessionCount * (workDuration / 60);
+            sendNotification('🏖️ 休憩タイム！', `${workDuration/60}分間お疲れさまでした。休憩しましょう。`);
+          } else {
+            sendNotification('🌺 集中タイム！', `休憩終了！${workDuration/60}分間集中しましょう。`);
+          }
           isWork = !isWork;
-          if (!isWork) document.getElementById("bgmPlayer").src = "";
           startPhase();
         }
       }, 1000);
     }
 
-    function resetLoop() {
-      clearInterval(timer);
-      time = workDuration;
-      running = false;
-      isWork = true;
-      updateDisplay();
-      document.getElementById("bgmPlayer").src = "";
-      document.body.className = "work";
-      document.getElementById("message").textContent = "";
+    // ============================================================
+    // BGM
+    // ============================================================
+    function updateBGM() {
+      const sel     = document.getElementById('musicSelect');
+      const videoId = sel.value;
+      if (!videoId) return;
+      const title   = sel.options[sel.selectedIndex]?.text || '';
+      document.getElementById('bgmPlayer').src =
+        `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}`;
+      document.getElementById('nowPlaying').innerHTML = `▶ <span>${title}</span>`;
+    }
+
+    function toggleShuffle() {
+      shuffleMode = !shuffleMode;
+      document.getElementById('shuffleBtn').classList.toggle('active', shuffleMode);
+    }
+
+    function shuffleSelect() {
+      const sel = document.getElementById('musicSelect');
+      sel.selectedIndex = Math.floor(Math.random() * sel.options.length);
+    }
+
+    function playNext() {
+      const sel = document.getElementById('musicSelect');
+      if (shuffleMode) {
+        shuffleSelect();
+      } else {
+        sel.selectedIndex = (sel.selectedIndex + 1) % sel.options.length;
+      }
+      updateBGM();
+    }
+
+    // ============================================================
+    // Notifications
+    // ============================================================
+    function requestNotificationPermission() {
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+    }
+
+    function sendNotification(title, body) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body, icon: 'https://riri8.kkpwebninja.com/image/card.png' });
+      }
     }
 
     updateDisplay();
