@@ -80,34 +80,71 @@
       letter-spacing: 0.02em;
     }
 
-    /* mode switcher */
-    .mode-switcher {
+    /* ── Time Picker Card ── */
+    .time-picker-card {
       display: flex;
-      background: rgba(0,0,0,0.06);
-      border-radius: 50px;
-      padding: 3px;
-      gap: 2px;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1rem;
     }
 
-    .mode-tab {
-      padding: 0.28rem 0.85rem;
-      border-radius: 50px;
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      font-family: inherit;
-      font-size: 0.72rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
+    .time-field {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex: 1;
+      justify-content: center;
     }
 
-    .mode-tab.active {
-      background: #fff;
-      color: var(--coral);
+    .time-label {
+      font-size: 0.7rem;
       font-weight: 700;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      min-width: 2em;
+    }
+
+    .time-btn {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #dde1e4;
+      background: #f5f6f7;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: all 0.15s;
+      font-family: inherit;
+      line-height: 1;
+    }
+
+    .time-btn:hover { background: var(--coral); border-color: var(--coral); color: #fff; }
+    .time-btn:disabled { opacity: 0.28; cursor: default; pointer-events: none; }
+
+    .time-val {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 2.4ch;
+      text-align: center;
+    }
+
+    .time-unit {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .time-divider {
+      width: 1px;
+      height: 22px;
+      background: var(--border);
+      margin: 0 0.3rem;
     }
 
     /* ── Card ── */
@@ -209,15 +246,6 @@
       margin-top: 0.3rem;
     }
 
-    /* Message */
-    #message {
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--muted);
-      text-align: center;
-      min-height: 1.2em;
-      margin-bottom: 0.6rem;
-    }
 
     /* Controls */
     .controls {
@@ -433,11 +461,26 @@
     <!-- Header -->
     <header class="app-header">
       <span class="app-logo">RIRI ∞ ポモドーロ</span>
-      <div class="mode-switcher">
-        <button class="mode-tab tab-25 active" onclick="setMode(25, 5, this)">25 / 5</button>
-        <button class="mode-tab tab-50"        onclick="setMode(50, 10, this)">50 / 10</button>
-      </div>
     </header>
+
+    <!-- Time Picker -->
+    <div class="card time-picker-card">
+      <div class="time-field">
+        <span class="time-label">集中</span>
+        <button class="time-btn" id="workMinus" onclick="adjustTime('work',-5)">−</button>
+        <span class="time-val" id="workVal">25</span>
+        <button class="time-btn" id="workPlus"  onclick="adjustTime('work',5)">＋</button>
+        <span class="time-unit">分</span>
+      </div>
+      <div class="time-divider"></div>
+      <div class="time-field">
+        <span class="time-label">休憩</span>
+        <button class="time-btn" id="breakMinus" onclick="adjustTime('break',-5)">−</button>
+        <span class="time-val" id="breakVal">5</span>
+        <button class="time-btn" id="breakPlus"  onclick="adjustTime('break',5)">＋</button>
+        <span class="time-unit">分</span>
+      </div>
+    </div>
 
     <!-- Timer -->
     <div class="card timer-card">
@@ -475,8 +518,6 @@
           </div>
         </div>
       </div>
-
-      <div id="message"></div>
 
       <div class="controls">
         <button class="btn-primary start" id="mainBtn" onclick="mainBtnClick()">▶ スタート</button>
@@ -703,11 +744,22 @@
       document.getElementById('timerRing').style.strokeDashoffset = offset;
     }
 
-    function setMode(workMin, breakMin) {
+    function adjustTime(type, delta) {
       if (running && !paused) return;
+      if (type === 'work') {
+        const v = Math.max(5, Math.min(120, workDuration / 60 + delta));
+        workDuration = v * 60;
+        document.getElementById('workVal').textContent = v;
+        document.getElementById('workMinus').disabled  = v <= 5;
+        document.getElementById('workPlus').disabled   = v >= 120;
+      } else {
+        const v = Math.max(5, Math.min(60, breakDuration / 60 + delta));
+        breakDuration = v * 60;
+        document.getElementById('breakVal').textContent = v;
+        document.getElementById('breakMinus').disabled  = v <= 5;
+        document.getElementById('breakPlus').disabled   = v >= 60;
+      }
       clearInterval(timerInterval);
-      workDuration  = workMin * 60;
-      breakDuration = breakMin * 60;
       time    = workDuration;
       isWork  = true;
       running = false;
@@ -716,13 +768,9 @@
       updateRing();
       document.body.className = '';
       if (ytReady && ytPlayer) ytPlayer.stopVideo();
-      document.getElementById('message').textContent  = '';
       document.getElementById('phase').textContent    = '集中タイム';
       document.getElementById('nowPlaying').innerHTML = '🎵 スタートすると再生されます';
       document.getElementById('ringWrapper').classList.remove('active');
-      document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
-      const cls = workMin === 25 ? '.tab-25' : '.tab-50';
-      document.querySelectorAll(cls).forEach(b => b.classList.add('active'));
       updateMainBtn();
       document.title = 'RIRI ポモドーロ タイム 🌴';
     }
@@ -782,7 +830,6 @@
       updateRing();
       document.body.className = '';
       if (ytReady && ytPlayer) ytPlayer.stopVideo();
-      document.getElementById('message').textContent  = '';
       document.getElementById('phase').textContent    = '集中タイム';
       document.getElementById('nowPlaying').innerHTML = '🎵 スタートすると再生されます';
       document.getElementById('ringWrapper').classList.remove('active');
@@ -797,12 +844,7 @@
       updateDisplay();
       updateRing();
 
-      const workMin  = workDuration / 60;
-      const breakMin = breakDuration / 60;
-      document.getElementById('phase').textContent   = isWork ? '集中タイム' : '休憩タイム';
-      document.getElementById('message').textContent = isWork
-        ? `🌺 集中スタート！${workMin}分後に休憩`
-        : `🏖️ お疲れさま！${breakMin}分間休憩しよう`;
+      document.getElementById('phase').textContent = isWork ? '集中タイム' : '休憩タイム';
 
       if (isWork) {
         if (shuffleMode) shuffleSelect();
