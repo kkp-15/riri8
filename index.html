@@ -977,7 +977,7 @@
           videos.push({ id: item.snippet.resourceId.videoId, title: item.snippet.title });
         }
         pageToken = data.nextPageToken || '';
-      } while (pageToken && videos.length < 200);
+      } while (pageToken && videos.length < 500);
       return videos;
     }
 
