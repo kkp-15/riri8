@@ -992,9 +992,14 @@
       return (parseInt(m[1] || 0) * 3600) + (parseInt(m[2] || 0) * 60) + parseInt(m[3] || 0);
     }
 
-    // BGM動画かどうか判定（3分以上 = BGMとみなす）
-    function isBGMVideo(durationSec) {
+    // BGM動画かどうか判定
+    const EXCLUDE_KEYWORDS = ['ラジオ', 'ライブ', 'トーク', '雑談', 'LIVE', 'Q&A', 'vlog', '質問'];
+    function isBGMVideo(title, durationSec) {
       if (durationSec > 0 && durationSec < 180) return false; // 3分未満はショート等として除外
+      const lower = (title || '').toLowerCase();
+      for (const kw of EXCLUDE_KEYWORDS) {
+        if (lower.includes(kw.toLowerCase())) return false;
+      }
       return true;
     }
 
@@ -1042,7 +1047,7 @@
           }
           for (const v of chunk) {
             const dur = durMap[v.id] || 0;
-            if (isBGMVideo(dur)) videos.push(v);
+            if (isBGMVideo(v.title, dur)) videos.push(v);
           }
         } catch {
           // duration取得失敗時はそのまま追加
