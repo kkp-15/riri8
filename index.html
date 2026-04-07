@@ -899,7 +899,9 @@
           setTimeout(() => { statusEl.textContent = ''; }, 3000);
           return;
         } catch (err) {
-          // YouTube API 失敗 → Piped にフォールバック
+          console.error('YouTube API failed:', err);
+          statusEl.textContent = `⚠️ YouTube API: ${err.message}`;
+          statusEl.className = 'api-status error';
         }
       }
 
@@ -979,6 +981,8 @@
     async function fetchFromYouTubeAPI() {
       const chRes  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${YT_CHANNEL_ID}&key=${YT_API_KEY}`);
       const chData = await chRes.json();
+      if (chData.error) throw new Error(`YouTube API: ${chData.error.message} (code ${chData.error.code})`);
+      if (!chData.items || !chData.items.length) throw new Error('YouTube API: チャンネルが見つかりません');
       const uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
 
       // まず全動画IDを収集
