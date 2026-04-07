@@ -899,9 +899,7 @@
           setTimeout(() => { statusEl.textContent = ''; }, 3000);
           return;
         } catch (err) {
-          console.error('YouTube API failed:', err);
-          statusEl.textContent = `⚠️ YouTube API: ${err.message}`;
-          statusEl.className = 'api-status error';
+          // YouTube API 失敗 → Piped/Invidious にフォールバック
         }
       }
 
@@ -984,10 +982,8 @@
         ? `id=${YT_CHANNEL_ID}`
         : `forHandle=${YT_CHANNEL_HANDLE.replace('@', '')}`;
       const chUrl = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&${chParam}&key=${YT_API_KEY}`;
-      console.log('YouTube API request:', chUrl);
       const chRes  = await fetch(chUrl);
       const chData = await chRes.json();
-      console.log('YouTube API response:', JSON.stringify(chData).slice(0, 500));
       if (chData.error) throw new Error(`${chData.error.message} (code ${chData.error.code})`);
       if (!chData.items || !chData.items.length) throw new Error('YouTube API: チャンネルが見つかりません');
       const uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
