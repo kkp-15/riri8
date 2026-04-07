@@ -961,23 +961,61 @@
       else statusEl.textContent = '';
     }
 
+    // ── BGMフィルタ（ショート・非BGM動画を除外） ──
+    // ISO 8601 duration を秒数に変換
+    function parseDuration(iso) {
+      const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+      if (!m) return 0;
+      return (parseInt(m[1] || 0) * 3600) + (parseInt(m[2] || 0) * 60) + parseInt(m[3] || 0);
+    }
+
+    // BGM動画かどうか判定（3分以上 = BGMとみなす）
+    function isBGMVideo(title, durationSec) {
+      if (durationSec > 0 && durationSec < 180) return false; // 3分未満はショート等として除外
+      return true;
+    }
+
     // ── YouTube Data API v3 ──
     async function fetchFromYouTubeAPI() {
       const chRes  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${YT_CHANNEL_ID}&key=${YT_API_KEY}`);
       const chData = await chRes.json();
       const uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
 
-      const videos = [];
+      // まず全動画IDを収集
+      const allItems = [];
       let pageToken = '';
       do {
         const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${uploadsId}&key=${YT_API_KEY}${pageToken ? '&pageToken=' + pageToken : ''}`;
         const res  = await fetch(url);
         const data = await res.json();
         for (const item of data.items) {
-          videos.push({ id: item.snippet.resourceId.videoId, title: item.snippet.title });
+          allItems.push({ id: item.snippet.resourceId.videoId, title: item.snippet.title });
         }
         pageToken = data.nextPageToken || '';
-      } while (pageToken && videos.length < 500);
+      } while (pageToken && allItems.length < 500);
+
+      // 動画の長さを取得してBGMだけ絞り込み（50件ずつバッチ処理）
+      const videos = [];
+      const CHUNK = 50;
+      for (let i = 0; i < allItems.length; i += CHUNK) {
+        const chunk = allItems.slice(i, i + CHUNK);
+        const ids = chunk.map(v => v.id).join(',');
+        try {
+          const vRes  = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${ids}&key=${YT_API_KEY}`);
+          const vData = await vRes.json();
+          const durMap = {};
+          for (const item of vData.items) {
+            durMap[item.id] = parseDuration(item.contentDetails.duration);
+          }
+          for (const v of chunk) {
+            const dur = durMap[v.id] || 0;
+            if (isBGMVideo(v.title, dur)) videos.push(v);
+          }
+        } catch {
+          // duration取得失敗時はそのまま追加
+          videos.push(...chunk);
+        }
+      }
       return videos;
     }
 
