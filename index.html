@@ -757,16 +757,24 @@
 
   <script>
     // ============================================================
-    // YouTube API 設定（BGM自動取得）
+    // YouTube チャンネル設定（BGM自動取得）
     //
-    // BGMをチャンネルから自動取得するには：
-    //   1. Google Cloud Console で YouTube Data API v3 を有効化
-    //   2. APIキーを YT_API_KEY に設定
-    //   3. チャンネルID（UCで始まる）を YT_CHANNEL_ID に設定
-    //      ※ youtube.com/@riri8bgm のページソースで "channelId" を検索
+    // Piped API（CORS対応のYouTubeプロキシ）を使って
+    // チャンネルの全動画を自動取得します（APIキー不要）。
+    // 取得失敗時はフォールバックリストを使用します。
+    //
+    // オプション: YouTube Data API v3 を使う場合は以下を設定
     // ============================================================
+    const YT_CHANNEL_HANDLE = '@riri8bgm';
     const YT_API_KEY    = '';
     const YT_CHANNEL_ID = '';
+
+    // Piped API インスタンス（複数で冗長化）
+    const PIPED_INSTANCES = [
+      'https://pipedapi.kavin.rocks',
+      'https://pipedapi.r4fo.com',
+      'https://pipedapi.adminforge.de',
+    ];
 
     const FALLBACK_VIDEOS = [
       { id: 'xvcXZbvYf0s', title: '作業用BGM 1'  },
@@ -864,50 +872,178 @@
     async function loadBGMList() {
       const statusEl = document.getElementById('apiStatus');
 
-      if (!YT_API_KEY || !YT_CHANNEL_ID) {
-        populateSelect(FALLBACK_VIDEOS);
+      // まずフォールバックリストを表示（即座にUIが使える）
+      populateSelect(FALLBACK_VIDEOS);
+
+      // YouTube Data API v3 が設定されている場合
+      if (YT_API_KEY && YT_CHANNEL_ID) {
+        statusEl.textContent = '⏳ BGMリストを取得中...';
+        statusEl.className = 'api-status loading';
+        try {
+          const videos = await fetchFromYouTubeAPI();
+          populateSelect(videos);
+          saveBGMCache(videos);
+          statusEl.textContent = `✅ ${videos.length}曲（YouTube API）`;
+          statusEl.className = 'api-status success';
+          setTimeout(() => { statusEl.textContent = ''; }, 3000);
+          return;
+        } catch (err) {
+          // YouTube API 失敗 → Piped にフォールバック
+        }
+      }
+
+      // Piped API でチャンネル動画を自動取得
+      statusEl.textContent = '⏳ チャンネルから取得中...';
+      statusEl.className = 'api-status loading';
+
+      // キャッシュがあればまず表示
+      const cached = loadBGMCache();
+      if (cached && cached.length > FALLBACK_VIDEOS.length) {
+        populateSelect(cached);
+        statusEl.textContent = `📦 ${cached.length}曲（キャッシュ）`;
+        statusEl.className = 'api-status success';
+      }
+
+      try {
+        const videos = await fetchFromPipedAPI(YT_CHANNEL_HANDLE);
+        if (videos.length > 0) {
+          // フォールバックリストとマージ（新しい動画を先頭に）
+          const merged = mergeVideoLists(videos, FALLBACK_VIDEOS);
+          populateSelect(merged);
+          saveBGMCache(merged);
+          statusEl.textContent = `✅ ${merged.length}曲（自動取得）`;
+          statusEl.className = 'api-status success';
+          setTimeout(() => { statusEl.textContent = ''; }, 4000);
+          return;
+        }
+      } catch (err) {
+        console.warn('Piped API failed:', err);
+      }
+
+      // 全て失敗 → フォールバック + noembed でタイトル補完
+      if (!cached || cached.length <= FALLBACK_VIDEOS.length) {
         statusEl.textContent = '⏳ タイトルを取得中...';
         statusEl.className = 'api-status loading';
         try {
           const enriched = await fetchTitlesFromNoembed(FALLBACK_VIDEOS);
           populateSelect(enriched);
         } catch {}
-        statusEl.textContent = '';
-        return;
       }
-
-      statusEl.textContent = '⏳ BGMリストを取得中...';
-      statusEl.className = 'api-status loading';
-
-      try {
-        const chRes  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${YT_CHANNEL_ID}&key=${YT_API_KEY}`);
-        const chData = await chRes.json();
-        const uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
-
-        const videos = [];
-        let pageToken = '';
-        do {
-          const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${uploadsId}&key=${YT_API_KEY}${pageToken ? '&pageToken=' + pageToken : ''}`;
-          const res  = await fetch(url);
-          const data = await res.json();
-          for (const item of data.items) {
-            videos.push({ id: item.snippet.resourceId.videoId, title: item.snippet.title });
-          }
-          pageToken = data.nextPageToken || '';
-        } while (pageToken && videos.length < 200);
-
-        populateSelect(videos);
-        statusEl.textContent = `✅ ${videos.length}曲`;
-        statusEl.className = 'api-status success';
-        setTimeout(() => { statusEl.textContent = ''; }, 3000);
-
-      } catch (err) {
-        populateSelect(FALLBACK_VIDEOS);
-        statusEl.textContent = '⚠️ フォールバックリスト使用中';
-        statusEl.className = 'api-status error';
-      }
+      statusEl.textContent = cached ? '' : '⚠️ フォールバックリスト使用中';
+      if (!cached) statusEl.className = 'api-status error';
+      else statusEl.textContent = '';
     }
 
+    // ── YouTube Data API v3 ──
+    async function fetchFromYouTubeAPI() {
+      const chRes  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${YT_CHANNEL_ID}&key=${YT_API_KEY}`);
+      const chData = await chRes.json();
+      const uploadsId = chData.items[0].contentDetails.relatedPlaylists.uploads;
+
+      const videos = [];
+      let pageToken = '';
+      do {
+        const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${uploadsId}&key=${YT_API_KEY}${pageToken ? '&pageToken=' + pageToken : ''}`;
+        const res  = await fetch(url);
+        const data = await res.json();
+        for (const item of data.items) {
+          videos.push({ id: item.snippet.resourceId.videoId, title: item.snippet.title });
+        }
+        pageToken = data.nextPageToken || '';
+      } while (pageToken && videos.length < 200);
+      return videos;
+    }
+
+    // ── Piped API（APIキー不要・CORS対応） ──
+    async function fetchFromPipedAPI(handle) {
+      for (const instance of PIPED_INSTANCES) {
+        try {
+          // チャンネル情報＋最初の動画ページを取得
+          const res = await fetch(`${instance}/channel/${handle}`, { signal: AbortSignal.timeout(8000) });
+          if (!res.ok) continue;
+          const data = await res.json();
+
+          const videos = [];
+          // relatedStreams に動画リストが入る
+          if (data.relatedStreams) {
+            for (const s of data.relatedStreams) {
+              const vid = extractVideoId(s.url);
+              if (vid) videos.push({ id: vid, title: s.title || '' });
+            }
+          }
+
+          // ページネーションで残りを取得
+          let nextpage = data.nextpage;
+          while (nextpage && videos.length < 300) {
+            try {
+              const pgRes = await fetch(
+                `${instance}/nextpage/channel/${data.id || handle}?nextpage=${encodeURIComponent(nextpage)}`,
+                { signal: AbortSignal.timeout(8000) }
+              );
+              if (!pgRes.ok) break;
+              const pgData = await pgRes.json();
+              if (pgData.relatedStreams) {
+                for (const s of pgData.relatedStreams) {
+                  const vid = extractVideoId(s.url);
+                  if (vid) videos.push({ id: vid, title: s.title || '' });
+                }
+              }
+              nextpage = pgData.nextpage || null;
+            } catch { break; }
+          }
+
+          if (videos.length > 0) return videos;
+        } catch (err) {
+          console.warn(`Piped instance ${instance} failed:`, err);
+          continue;
+        }
+      }
+      return [];
+    }
+
+    function extractVideoId(url) {
+      if (!url) return null;
+      const m = url.match(/[?&]v=([^&]+)/) || url.match(/\/watch\/([^?&]+)/);
+      return m ? m[1] : null;
+    }
+
+    // ── 動画リストのマージ（重複排除） ──
+    function mergeVideoLists(primary, secondary) {
+      const seen = new Set();
+      const merged = [];
+      for (const v of primary) {
+        if (!seen.has(v.id)) { seen.add(v.id); merged.push(v); }
+      }
+      for (const v of secondary) {
+        if (!seen.has(v.id)) { seen.add(v.id); merged.push(v); }
+      }
+      return merged;
+    }
+
+    // ── キャッシュ（localStorage、24時間有効） ──
+    const BGM_CACHE_KEY = 'riri8_bgm_cache';
+    const BGM_CACHE_TTL = 24 * 60 * 60 * 1000; // 24時間
+
+    function saveBGMCache(videos) {
+      try {
+        localStorage.setItem(BGM_CACHE_KEY, JSON.stringify({
+          ts: Date.now(),
+          videos: videos,
+        }));
+      } catch {}
+    }
+
+    function loadBGMCache() {
+      try {
+        const raw = localStorage.getItem(BGM_CACHE_KEY);
+        if (!raw) return null;
+        const cache = JSON.parse(raw);
+        if (Date.now() - cache.ts > BGM_CACHE_TTL) return null;
+        return cache.videos;
+      } catch { return null; }
+    }
+
+    // ── noembed でタイトル補完 ──
     async function fetchTitlesFromNoembed(videos) {
       const result = videos.map(v => ({ ...v }));
       const CHUNK = 6;
