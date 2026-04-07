@@ -447,6 +447,185 @@
     .api-status.success { color: #27ae60; }
     .api-status.error   { color: #e74c3c; }
 
+    /* ── BGM Browse Button ── */
+    .btn-browse {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: linear-gradient(135deg, #fff8f5, #fdeee8);
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+      color: var(--coral);
+      box-shadow: 0 2px 10px rgba(225,112,85,0.2);
+    }
+    .btn-browse:hover {
+      background: linear-gradient(135deg, var(--coral), var(--gold));
+      color: #fff;
+      transform: scale(1.14);
+      box-shadow: 0 6px 20px rgba(225,112,85,0.5);
+    }
+    .btn-browse:active { transform: scale(0.93); }
+
+    /* ── BGM Modal ── */
+    .bgm-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .bgm-modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .bgm-modal {
+      background: #fff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.25s ease;
+    }
+    .bgm-modal-overlay.open .bgm-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .bgm-modal-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1rem 1.2rem 0.7rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .bgm-modal-header h3 {
+      flex: 1;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .bgm-modal-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: #f5f5f5;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .bgm-modal-close:hover {
+      background: var(--coral);
+      color: #fff;
+    }
+
+    .bgm-search-wrap {
+      padding: 0.6rem 1.2rem;
+    }
+    .bgm-search {
+      width: 100%;
+      padding: 0.5rem 0.8rem 0.5rem 2.2rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      background: #fafafa url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2395a5a6' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 10-1.397 1.398h-.001l3.85 3.85a1 1 0 001.415-1.414l-3.85-3.85zm-5.242.156a5 5 0 110-10 5 5 0 010 10z'/%3E%3C/svg%3E") no-repeat 0.7rem center;
+      transition: border-color 0.2s;
+      color: var(--text);
+    }
+    .bgm-search:focus {
+      outline: none;
+      border-color: var(--coral);
+      box-shadow: 0 0 0 3px rgba(225,112,85,0.12);
+    }
+    .bgm-search::placeholder { color: #b2bec3; }
+
+    .bgm-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.5rem 0.8rem 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .bgm-list::-webkit-scrollbar { width: 5px; }
+    .bgm-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+
+    .bgm-item {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.45rem 0.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 2px solid transparent;
+    }
+    .bgm-item:hover {
+      background: #fff5f2;
+    }
+    .bgm-item.selected {
+      background: linear-gradient(135deg, #fff5f2, #fdeee8);
+      border-color: var(--coral);
+    }
+    .bgm-item.selected .bgm-item-title { color: var(--coral); font-weight: 600; }
+
+    .bgm-thumb {
+      width: 80px;
+      height: 45px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #f0f0f0;
+    }
+
+    .bgm-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .bgm-item-title {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .bgm-item-num {
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 0.1rem;
+    }
+
+    .bgm-count {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: center;
+      padding: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+
     /* ── Video Card ── */
     .video-card { overflow: hidden; }
 
@@ -546,11 +725,27 @@
         <select id="musicSelect" onchange="updateBGM()">
           <option value="">読み込み中...</option>
         </select>
+        <button class="btn-browse" onclick="openBGMModal()" title="BGM一覧">🎬</button>
         <button class="btn-icon" id="shuffleBtn" onclick="toggleShuffle()" title="シャッフル">🔀</button>
         <button class="btn-icon" onclick="playNext()" title="次の曲">⏭</button>
       </div>
       <div class="now-playing" id="nowPlaying">🎵 スタートすると再生されます</div>
       <div class="api-status"  id="apiStatus"></div>
+    </div>
+
+    <!-- BGM Selection Modal -->
+    <div class="bgm-modal-overlay" id="bgmModalOverlay" onclick="closeBGMModalOnOverlay(event)">
+      <div class="bgm-modal">
+        <div class="bgm-modal-header">
+          <h3>BGM を選ぶ</h3>
+          <button class="bgm-modal-close" onclick="closeBGMModal()">&times;</button>
+        </div>
+        <div class="bgm-search-wrap">
+          <input type="text" class="bgm-search" id="bgmSearch" placeholder="曲名で検索..." oninput="filterBGMList()">
+        </div>
+        <div class="bgm-list" id="bgmList"></div>
+        <div class="bgm-count" id="bgmCount"></div>
+      </div>
     </div>
 
     <!-- Video -->
@@ -653,6 +848,7 @@
     });
 
     document.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape') { closeBGMModal(); return; }
       if (e.code === 'Space' && !['INPUT','SELECT','BUTTON','TEXTAREA'].includes(e.target.tagName)) {
         e.preventDefault();
         mainBtnClick();
@@ -927,6 +1123,66 @@
         ? Math.floor(Math.random() * sel.options.length)
         : (sel.selectedIndex + 1) % sel.options.length;
       updateBGM();
+    }
+
+    // ── BGM Modal ──
+    let bgmVideos = []; // current video list for modal
+
+    function openBGMModal() {
+      const sel = document.getElementById('musicSelect');
+      const overlay = document.getElementById('bgmModalOverlay');
+      bgmVideos = Array.from(sel.options).map(opt => ({
+        id: opt.value,
+        title: opt.dataset.fullTitle || opt.textContent,
+      })).filter(v => v.id);
+      renderBGMList(bgmVideos, sel.value);
+      document.getElementById('bgmSearch').value = '';
+      overlay.classList.add('open');
+    }
+
+    function closeBGMModal() {
+      document.getElementById('bgmModalOverlay').classList.remove('open');
+    }
+
+    function closeBGMModalOnOverlay(e) {
+      if (e.target === e.currentTarget) closeBGMModal();
+    }
+
+    function filterBGMList() {
+      const query = document.getElementById('bgmSearch').value.toLowerCase();
+      const sel = document.getElementById('musicSelect');
+      const filtered = query
+        ? bgmVideos.filter(v => v.title.toLowerCase().includes(query) || cleanTitle(v.title).toLowerCase().includes(query))
+        : bgmVideos;
+      renderBGMList(filtered, sel.value);
+    }
+
+    function renderBGMList(videos, selectedId) {
+      const list = document.getElementById('bgmList');
+      const count = document.getElementById('bgmCount');
+      list.innerHTML = '';
+      videos.forEach((v, i) => {
+        const item = document.createElement('div');
+        item.className = 'bgm-item' + (v.id === selectedId ? ' selected' : '');
+        const clean = cleanTitle(v.title);
+        item.innerHTML = `<img class="bgm-thumb" src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" alt="" loading="lazy"><div class="bgm-item-info"><div class="bgm-item-title">${escapeHtml(clean)}</div><div class="bgm-item-num">#${bgmVideos.indexOf(v) + 1}</div></div>`;
+        item.onclick = () => selectBGMFromModal(v.id);
+        list.appendChild(item);
+      });
+      count.textContent = `${videos.length} 曲`;
+    }
+
+    function selectBGMFromModal(videoId) {
+      const sel = document.getElementById('musicSelect');
+      sel.value = videoId;
+      updateBGM();
+      closeBGMModal();
+    }
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
     }
 
     // ── Notifications ──
