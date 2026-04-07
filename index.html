@@ -767,7 +767,7 @@
     // ============================================================
     const YT_CHANNEL_HANDLE = '@riri8bgm';
     const YT_API_KEY    = 'AIzaSyClHiAHecUQCbHM3-CoZt26sQalMsGaBwQ';
-    const YT_CHANNEL_ID = 'UCIkT5CovVko0bGRQMZtt8lw';
+    const YT_CHANNEL_ID = ''; // ハンドル名から自動解決
 
     // Piped API インスタンス（複数で冗長化）
     const PIPED_INSTANCES = [
@@ -887,7 +887,7 @@
       populateSelect(FALLBACK_VIDEOS);
 
       // YouTube Data API v3 が設定されている場合
-      if (YT_API_KEY && YT_CHANNEL_ID) {
+      if (YT_API_KEY && (YT_CHANNEL_ID || YT_CHANNEL_HANDLE)) {
         statusEl.textContent = '⏳ BGMリストを取得中...';
         statusEl.className = 'api-status loading';
         try {
@@ -979,7 +979,11 @@
 
     // ── YouTube Data API v3 ──
     async function fetchFromYouTubeAPI() {
-      const chUrl = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${YT_CHANNEL_ID}&key=${YT_API_KEY}`;
+      // ハンドル名またはチャンネルIDで検索
+      const chParam = YT_CHANNEL_ID
+        ? `id=${YT_CHANNEL_ID}`
+        : `forHandle=${YT_CHANNEL_HANDLE.replace('@', '')}`;
+      const chUrl = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&${chParam}&key=${YT_API_KEY}`;
       console.log('YouTube API request:', chUrl);
       const chRes  = await fetch(chUrl);
       const chData = await chRes.json();
