@@ -772,8 +772,19 @@
     // Piped API インスタンス（複数で冗長化）
     const PIPED_INSTANCES = [
       'https://pipedapi.kavin.rocks',
-      'https://pipedapi.r4fo.com',
       'https://pipedapi.adminforge.de',
+      'https://api.piped.yt',
+      'https://pipedapi.leptons.xyz',
+      'https://piped-api.privacy.com.de',
+      'https://pipedapi.drgns.space',
+      'https://pipedapi.reallyaweso.me',
+    ];
+
+    // Invidious API インスタンス（Piped失敗時のフォールバック）
+    const INVIDIOUS_INSTANCES = [
+      'https://inv.nadeko.net',
+      'https://yewtu.be',
+      'https://invidious.nerdvpn.de',
     ];
 
     const FALLBACK_VIDEOS = [
@@ -920,6 +931,22 @@
         console.warn('Piped API failed:', err);
       }
 
+      // Piped 失敗 → Invidious API を試す
+      try {
+        const videos = await fetchFromInvidiousAPI(YT_CHANNEL_HANDLE);
+        if (videos.length > 0) {
+          const merged = mergeVideoLists(videos, FALLBACK_VIDEOS);
+          populateSelect(merged);
+          saveBGMCache(merged);
+          statusEl.textContent = `✅ ${merged.length}曲（自動取得）`;
+          statusEl.className = 'api-status success';
+          setTimeout(() => { statusEl.textContent = ''; }, 4000);
+          return;
+        }
+      } catch (err) {
+        console.warn('Invidious API failed:', err);
+      }
+
       // 全て失敗 → フォールバック + noembed でタイトル補完
       if (!cached || cached.length <= FALLBACK_VIDEOS.length) {
         statusEl.textContent = '⏳ タイトルを取得中...';
@@ -1005,6 +1032,48 @@
       if (!url) return null;
       const m = url.match(/[?&]v=([^&]+)/) || url.match(/\/watch\/([^?&]+)/);
       return m ? m[1] : null;
+    }
+
+    // ── Invidious API（Piped失敗時のフォールバック） ──
+    async function fetchFromInvidiousAPI(handle) {
+      // まずハンドルからチャンネルIDを解決
+      for (const instance of INVIDIOUS_INSTANCES) {
+        try {
+          // resolveurl でハンドル→チャンネルID変換
+          const resolveRes = await fetch(
+            `${instance}/api/v1/resolveurl?url=https://youtube.com/${handle}`,
+            { signal: AbortSignal.timeout(8000) }
+          );
+          if (!resolveRes.ok) continue;
+          const resolveData = await resolveRes.json();
+          const channelId = resolveData.ucid || resolveData.authorId;
+          if (!channelId) continue;
+
+          // チャンネルの動画を取得（ページネーション）
+          const videos = [];
+          let page = 1;
+          while (videos.length < 300) {
+            const vRes = await fetch(
+              `${instance}/api/v1/channels/${channelId}/videos?page=${page}&sort_by=newest`,
+              { signal: AbortSignal.timeout(8000) }
+            );
+            if (!vRes.ok) break;
+            const vData = await vRes.json();
+            if (!vData.videos || vData.videos.length === 0) break;
+            for (const v of vData.videos) {
+              videos.push({ id: v.videoId, title: v.title || '' });
+            }
+            page++;
+            if (vData.videos.length < 30) break; // 最終ページ
+          }
+
+          if (videos.length > 0) return videos;
+        } catch (err) {
+          console.warn(`Invidious instance ${instance} failed:`, err);
+          continue;
+        }
+      }
+      return [];
     }
 
     // ── 動画リストのマージ（重複排除） ──
