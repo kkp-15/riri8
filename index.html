@@ -1165,14 +1165,16 @@
       return merged;
     }
 
-    // ── キャッシュ（localStorage、24時間有効） ──
+    // ── キャッシュ（localStorage、バージョン管理付き） ──
     const BGM_CACHE_KEY = 'riri8_bgm_cache';
+    const BGM_CACHE_VER = 2; // フィルタ変更時にインクリメント
     const BGM_CACHE_TTL = 24 * 60 * 60 * 1000; // 24時間
 
     function saveBGMCache(videos) {
       try {
         localStorage.setItem(BGM_CACHE_KEY, JSON.stringify({
           ts: Date.now(),
+          ver: BGM_CACHE_VER,
           videos: videos,
         }));
       } catch {}
@@ -1183,6 +1185,7 @@
         const raw = localStorage.getItem(BGM_CACHE_KEY);
         if (!raw) return null;
         const cache = JSON.parse(raw);
+        if (cache.ver !== BGM_CACHE_VER) return null; // バージョン違い → 無効
         if (Date.now() - cache.ts > BGM_CACHE_TTL) return null;
         return cache.videos;
       } catch { return null; }
