@@ -993,7 +993,7 @@
     }
 
     // BGM動画かどうか判定
-    const EXCLUDE_KEYWORDS = ['ラジオ', 'ライブ', 'トーク', '雑談', 'LIVE', 'Q&A', 'vlog', '質問', '対談'];
+    const EXCLUDE_KEYWORDS = ['ラジオ', 'ライブ', 'トーク', '雑談', 'LIVE', 'Q&A', 'vlog', '質問', '対談', 'コラボ', 'インタビュー', 'ゲスト', '座談'];
     function isBGMVideo(title, durationSec) {
       if (durationSec > 0 && durationSec < 180) return false; // 3分未満はショート等として除外
       const lower = (title || '').toLowerCase();
